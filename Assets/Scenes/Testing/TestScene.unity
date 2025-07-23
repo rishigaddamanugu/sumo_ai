@@ -244,6 +244,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb8598fe93f7a4de1ad645756411faf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &186439643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186439625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8370a82435dfd4bd88706459cc05c99e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  opponent: {fileID: 1840713871}
+--- !u!114 &186439644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186439625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05239834fcc0340aca4416b7704aac37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  opponent: {fileID: 1840713871}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1212,6 +1238,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c2d3fe22b1bc44a3816652112ea0584, type: 3}
+--- !u!1 &1840713871 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 444478599093302328, guid: 8c2d3fe22b1bc44a3816652112ea0584, type: 3}
+  m_PrefabInstance: {fileID: 1840713870}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2091295414 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3502857408813660235, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
@@ -1345,6 +1376,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 444478599093302328, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       insertIndex: -1
       addedObject: {fileID: 186439637}
+    - targetCorrespondingSourceObject: {fileID: 444478599093302328, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 186439644}
+    - targetCorrespondingSourceObject: {fileID: 444478599093302328, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 186439643}
     - targetCorrespondingSourceObject: {fileID: 3502857408813660235, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2091295416}

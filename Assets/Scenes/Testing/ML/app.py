@@ -1,19 +1,21 @@
 from flask import Flask, request, jsonify
 import time
 import random
+from model import Model
 
 app = Flask(__name__)
 
-buffer = []
-threshold = 5  # Simulate training after 5 observations
-
+model = Model(state_dim=6, action_dim=4)
 
 @app.route("/get_next_action", methods=["POST"])
 def get_next_action():
     data = request.get_json()
-    buffer.append(data)
+    state = data["state"]
+    reward = data["reward"]
 
-    return jsonify({"action": random.choice(["up", "down", "left", "right"])})
+    action = model.predict(state, reward)
+
+    return jsonify({"action": action})
 
 if __name__ == "__main__":
     app.run(port=5000)
