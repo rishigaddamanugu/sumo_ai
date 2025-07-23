@@ -6,7 +6,7 @@ public class AgentUnit : MonoBehaviour
     private bool isMoving = false;
     private string pendingAction = null;
     private bool hasAction = false;
-
+    
     void Start()
     {
         FindObjectOfType<AgentManager>().RegisterAgent(this);
@@ -19,7 +19,11 @@ public class AgentUnit : MonoBehaviour
         Vector3 moveDir = Vector3.zero;
         bool gotResponse = false;
 
-        yield return MLAPI.RequestNextAction(new float[] { 0f }, 0f, direction =>
+        // Get actual state and reward from components
+        float[] state = GetComponent<StateFunction>().GetState();
+        float reward = GetComponent<RewardFunction>().CalculateReward();
+
+        yield return MLAPI.RequestNextAction(state, reward, direction =>
         {
             pendingAction = direction;
             gotResponse = true;
@@ -37,35 +41,6 @@ public class AgentUnit : MonoBehaviour
         StartCoroutine(MoveSmooth(DirectionToVector(pendingAction)));
         hasAction = false;
         pendingAction = null;
-    }
-
-    // Legacy method for backward compatibility
-    public IEnumerator RequestAndMove()
-    {
-        isMoving = true;
-
-        Vector3 moveDir = Vector3.zero;
-        bool gotResponse = false;
-
-        // Pause game
-        Time.timeScale = 0f;
-
-        yield return MLAPI.RequestNextAction(new float[] { 0f }, 0f, direction =>
-        {
-            moveDir = DirectionToVector(direction);
-            gotResponse = true;
-        });
-
-        yield return new WaitUntil(() => gotResponse);
-
-        // Resume game
-        Time.timeScale = 1f;
-
-        // Move if valid
-        if (moveDir != Vector3.zero)
-            yield return MoveSmooth(moveDir);
-
-        isMoving = false;
     }
 
     private IEnumerator MoveSmooth(Vector3 direction)
