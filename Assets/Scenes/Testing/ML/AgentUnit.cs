@@ -19,6 +19,9 @@ public class AgentUnit : MonoBehaviour
         Vector3 moveDir = Vector3.zero;
         bool gotResponse = false;
 
+        // Pause game
+        Time.timeScale = 0f;
+
         yield return MLAPI.RequestNextAction(new float[] { 0f }, 0f, direction =>
         {
             moveDir = DirectionToVector(direction);
@@ -27,12 +30,16 @@ public class AgentUnit : MonoBehaviour
 
         yield return new WaitUntil(() => gotResponse);
 
+        // Resume game
+        Time.timeScale = 1f;
+
         // Move if valid
         if (moveDir != Vector3.zero)
             yield return MoveSmooth(moveDir);
 
         isMoving = false;
     }
+
 
     private IEnumerator MoveSmooth(Vector3 direction)
     {
