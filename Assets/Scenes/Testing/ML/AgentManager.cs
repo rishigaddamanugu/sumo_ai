@@ -9,17 +9,35 @@ public class AgentManager : MonoBehaviour
     private bool isWaitingForResponses = false;
     
     // Speed controller variables
-    private float[] speedMultipliers = { 1f };
-    private float[] speedDurations = { 5f };
+    private float[] speedMultipliers = { 1f, 8f, 16f };
+    private float[] speedDurations = { 5f, 5f, 15f };
     private int currentSpeedIndex = 0;
     private float speedTimer = 0f;
     private float previousTimeScale = 1f;
     private bool speedControllerActive = true;
+    
+    // Speed display UI reference
+    private SpeedDisplayUI speedDisplayUI;
 
     void Start()
     {
+        // Initialize speed display UI
+        InitializeSpeedDisplay();
+        
         StartCoroutine(ParallelAgentLoop());
         StartCoroutine(SpeedControllerLoop());
+    }
+
+    void InitializeSpeedDisplay()
+    {
+        // Create a GameObject with SpeedDisplayUI component
+        GameObject speedDisplayGO = new GameObject("SpeedDisplayUI");
+        speedDisplayUI = speedDisplayGO.AddComponent<SpeedDisplayUI>();
+        
+        // Parent it to this AgentManager for organization
+        speedDisplayGO.transform.SetParent(transform);
+        
+        Debug.Log("SpeedDisplayUI initialized");
     }
 
     IEnumerator SpeedControllerLoop()
@@ -38,11 +56,30 @@ public class AgentManager : MonoBehaviour
                 // Only change time scale if we're not currently paused for API calls
                 if (!isWaitingForResponses)
                 {
-                    Time.timeScale = speedMultipliers[currentSpeedIndex];
+                    float newSpeed = speedMultipliers[currentSpeedIndex];
+                    Time.timeScale = newSpeed;
+                    
+                    // Update speed display
+                    UpdateSpeedDisplay(newSpeed);
                 }
             }
             
             yield return null;
+        }
+    }
+
+    void UpdateSpeedDisplay(float speedMultiplier)
+    {
+        if (speedDisplayUI != null)
+        {
+            if (speedMultiplier > 1f)
+            {
+                speedDisplayUI.ShowSpeedText(speedMultiplier);
+            }
+            else
+            {
+                speedDisplayUI.HideSpeedText();
+            }
         }
     }
 
@@ -71,6 +108,12 @@ public class AgentManager : MonoBehaviour
         
         // Pause the game once for all agents
         Time.timeScale = 0f;
+        
+        // // Hide speed display during pause
+        // if (speedDisplayUI != null)
+        // {
+        //     speedDisplayUI.HideSpeedText();
+        // }
 
         // Start all agents making their API calls simultaneously
         var agentCoroutines = new List<Coroutine>();
@@ -87,6 +130,12 @@ public class AgentManager : MonoBehaviour
 
         // Resume game with the previous time scale
         Time.timeScale = previousTimeScale;
+        
+        // Show speed display again if speed > 1x
+        if (previousTimeScale > 1f)
+        {
+            UpdateSpeedDisplay(previousTimeScale);
+        }
 
         // Let all agents move simultaneously
         foreach (var agent in agents)
@@ -111,6 +160,10 @@ public class AgentManager : MonoBehaviour
         if (!active)
         {
             Time.timeScale = 1f; // Reset to normal speed when disabled
+            if (speedDisplayUI != null)
+            {
+                speedDisplayUI.HideSpeedText();
+            }
         }
     }
     
@@ -127,5 +180,22 @@ public class AgentManager : MonoBehaviour
     public float GetRemainingTimeInCurrentSpeed()
     {
         return speedDurations[currentSpeedIndex] - speedTimer;
+    }
+    
+    // Public methods to control speed display
+    public void SetSpeedDisplayVisible(bool visible)
+    {
+        if (speedDisplayUI != null)
+        {
+            speedDisplayUI.SetSpeedTextVisible(visible);
+        }
+    }
+    
+    public void UpdateSpeedDisplaySettings(float fontSize, Color normalColor, Color speedupColor, Vector2 offset)
+    {
+        if (speedDisplayUI != null)
+        {
+            speedDisplayUI.UpdateUISettings(fontSize, normalColor, speedupColor, offset);
+        }
     }
 }
