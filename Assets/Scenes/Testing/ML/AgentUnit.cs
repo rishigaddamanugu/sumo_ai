@@ -4,6 +4,8 @@ using System.Collections;
 public class AgentUnit : MonoBehaviour
 {
     private bool isMoving = false;
+    private string pendingAction = null;
+    private bool hasAction = false;
 
     void Start()
     {
@@ -12,6 +14,32 @@ public class AgentUnit : MonoBehaviour
 
     public bool IsBusy() => isMoving;
 
+    public IEnumerator RequestAction()
+    {
+        Vector3 moveDir = Vector3.zero;
+        bool gotResponse = false;
+
+        yield return MLAPI.RequestNextAction(new float[] { 0f }, 0f, direction =>
+        {
+            pendingAction = direction;
+            gotResponse = true;
+        });
+
+        yield return new WaitUntil(() => gotResponse);
+        hasAction = true;
+    }
+
+    public void ExecuteMove()
+    {
+        if (!hasAction) return;
+
+        isMoving = true;
+        StartCoroutine(MoveSmooth(DirectionToVector(pendingAction)));
+        hasAction = false;
+        pendingAction = null;
+    }
+
+    // Legacy method for backward compatibility
     public IEnumerator RequestAndMove()
     {
         isMoving = true;
@@ -40,7 +68,6 @@ public class AgentUnit : MonoBehaviour
         isMoving = false;
     }
 
-
     private IEnumerator MoveSmooth(Vector3 direction)
     {
         Vector3 start = transform.position;
@@ -56,6 +83,7 @@ public class AgentUnit : MonoBehaviour
         }
 
         transform.position = end;
+        isMoving = false;
     }
 
     private Vector3 DirectionToVector(string dir)
