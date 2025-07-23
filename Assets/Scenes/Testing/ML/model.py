@@ -47,7 +47,7 @@ class Model(nn.Module):
 
     def train_with_reward_scaling(self):
         # Remove the first reward (it's meaningless — no action caused it)
-        rewards = torch.tensor(self.rewards[1:], dtype=torch.float32)
+        rewards = torch.tensor(self.rewards[:-1], dtype=torch.float32) ## Reward function takes care of the first reward
         states = torch.tensor(self.states[:-1], dtype=torch.float32)
         actions = torch.tensor(self.actions[:-1], dtype=torch.float32)
 
