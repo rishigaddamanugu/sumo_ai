@@ -7,10 +7,43 @@ public class AgentManager : MonoBehaviour
 {
     public List<AgentUnit> agents = new List<AgentUnit>();
     private bool isWaitingForResponses = false;
+    
+    // Speed controller variables
+    private float[] speedMultipliers = { 1f, 8f, 16f };
+    private float[] speedDurations = { 5f, 5f, 15f };
+    private int currentSpeedIndex = 0;
+    private float speedTimer = 0f;
+    private float previousTimeScale = 1f;
+    private bool speedControllerActive = true;
 
     void Start()
     {
         StartCoroutine(ParallelAgentLoop());
+        StartCoroutine(SpeedControllerLoop());
+    }
+
+    IEnumerator SpeedControllerLoop()
+    {
+        while (speedControllerActive)
+        {
+            // Update speed timer
+            speedTimer += Time.unscaledDeltaTime;
+            
+            // Check if it's time to change speed
+            if (speedTimer >= speedDurations[currentSpeedIndex])
+            {
+                speedTimer = 0f;
+                currentSpeedIndex = (currentSpeedIndex + 1) % speedMultipliers.Length;
+                
+                // Only change time scale if we're not currently paused for API calls
+                if (!isWaitingForResponses)
+                {
+                    Time.timeScale = speedMultipliers[currentSpeedIndex];
+                }
+            }
+            
+            yield return null;
+        }
     }
 
     IEnumerator ParallelAgentLoop()
@@ -33,6 +66,9 @@ public class AgentManager : MonoBehaviour
 
         isWaitingForResponses = true;
 
+        // Store current time scale before pausing
+        previousTimeScale = Time.timeScale;
+        
         // Pause the game once for all agents
         Time.timeScale = 0f;
 
@@ -49,8 +85,8 @@ public class AgentManager : MonoBehaviour
             yield return coroutine;
         }
 
-        // Resume game
-        Time.timeScale = 1f;
+        // Resume game with the previous time scale
+        Time.timeScale = previousTimeScale;
 
         // Let all agents move simultaneously
         foreach (var agent in agents)
@@ -67,4 +103,29 @@ public class AgentManager : MonoBehaviour
     }
 
     public bool IsWaitingForResponses() => isWaitingForResponses;
+    
+    // Public methods to control speed controller
+    public void SetSpeedControllerActive(bool active)
+    {
+        speedControllerActive = active;
+        if (!active)
+        {
+            Time.timeScale = 1f; // Reset to normal speed when disabled
+        }
+    }
+    
+    public float GetCurrentSpeedMultiplier()
+    {
+        return speedMultipliers[currentSpeedIndex];
+    }
+    
+    public float GetCurrentSpeedDuration()
+    {
+        return speedDurations[currentSpeedIndex];
+    }
+    
+    public float GetRemainingTimeInCurrentSpeed()
+    {
+        return speedDurations[currentSpeedIndex] - speedTimer;
+    }
 }
