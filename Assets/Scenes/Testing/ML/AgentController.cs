@@ -21,8 +21,12 @@ public class AgentController : MonoBehaviour
                 float[] dummyState = new float[] { 0f, 0f, 0f }; // Replace with actual state
                 float dummyReward = 0f;
 
+                Time.timeScale = 0f;  // ⏸️ Pause the entire game
+
                 yield return MLAPI.RequestNextAction(dummyState, dummyReward, direction =>
                 {
+                    Time.timeScale = 1f;  // ▶️ Resume game once response is received
+
                     if (direction == "pause")
                     {
                         Debug.Log("[Agent] Model is training — pausing movement.");
@@ -42,6 +46,7 @@ public class AgentController : MonoBehaviour
             yield return null;
         }
     }
+
 
     IEnumerator MoveSmooth(Vector3 direction, float duration)
     {
