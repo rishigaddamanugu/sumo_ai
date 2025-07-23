@@ -9,8 +9,8 @@ public class AgentManager : MonoBehaviour
     private bool isWaitingForResponses = false;
     
     // Speed controller variables
-    private float[] speedMultipliers = { 1f, 8f, 16f };
-    private float[] speedDurations = { 5f, 5f, 15f };
+    private float[] speedMultipliers = { 1f };
+    private float[] speedDurations = { 5f };
     private int currentSpeedIndex = 0;
     private float speedTimer = 0f;
     private float previousTimeScale = 1f;

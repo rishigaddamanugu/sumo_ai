@@ -5,7 +5,7 @@ import numpy as np
 import random
 
 class Model(nn.Module):
-    def __init__(self, state_dim, action_dim, trajectory_length=50):
+    def __init__(self, state_dim, action_dim, trajectory_length=10):
         super(Model, self).__init__()
 
         self.fc1 = nn.Linear(state_dim, 128)
@@ -31,9 +31,6 @@ class Model(nn.Module):
         return x
 
     def predict(self, state, reward):
-        # Append reward from previous state-action pair
-        self.rewards.append(reward)
-
         # Convert state to tensor and predict action
         state_tensor = torch.tensor(state, dtype=torch.float32)
         action_probs = self.forward(state_tensor)
@@ -41,39 +38,43 @@ class Model(nn.Module):
         # Calculate confidence (max probability)
         confidence = torch.max(action_probs).item()
         
-        # Use random actions if confidence is low (less than 0.4)
+        # Determine which action to take
         if confidence < 0.4:
-            actions = ["up", "down", "left", "right"]
-            return random.choice(actions)
-        
-        # Get the action that was actually taken
-        if confidence < 0.4:
-            # Random action was taken
+            # Use random action when confidence is low
             action_idx = random.randint(0, 3)
         else:
-            # Model action was taken
+            # Use model's predicted action
             action_idx = torch.argmax(action_probs).item()
         
-        # Store the actual action taken (one-hot encoded)
+        # Store the state and actual action taken (one-hot encoded)
         actual_action = np.zeros(4)
         actual_action[action_idx] = 1.0
         self.states.append(state)
         self.actions.append(actual_action)
+        
+        # Store the reward from the previous state-action pair
+        # (This reward corresponds to the action taken in the previous timestep)
+        self.rewards.append(reward)
 
         # Train when we have enough transitions
-        if len(self.rewards) >= self.trajectory_length:
+        if len(self.states) >= self.trajectory_length:
             self.train_with_reward_scaling()
 
-        # Convert to action string
-        action_idx = torch.argmax(action_probs).item()
+        # Return the action that was actually taken
         actions = ["up", "down", "left", "right"]
         return actions[action_idx]
 
     def train_with_reward_scaling(self):
-        # Remove the first reward (it's meaningless — no action caused it)
-        rewards = torch.tensor(self.rewards[:-1], dtype=torch.float32) ## Reward function takes care of the first reward
-        states = torch.tensor(self.states[:-1], dtype=torch.float32)
-        actions = torch.tensor(self.actions[:-1], dtype=torch.float32)
+        # Safety check: ensure we have enough data to train
+        if len(self.states) < 2 or len(self.actions) < 2 or len(self.rewards) < 2:
+            return
+            
+        # Convert lists to numpy arrays first for better performance
+        # Note: rewards[1:] corresponds to states[:-1] and actions[:-1]
+        # because reward is received after taking an action
+        rewards = torch.tensor(np.array(self.rewards[1:]), dtype=torch.float32)
+        states = torch.tensor(np.array(self.states[:-1]), dtype=torch.float32)  # Remove last state
+        actions = torch.tensor(np.array(self.actions[:-1]), dtype=torch.float32)  # Remove last action
 
         # Normalize rewards
         reward_mean = rewards.mean()
