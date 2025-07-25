@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class StadiumManager : MonoBehaviour
 {
@@ -8,8 +9,8 @@ public class StadiumManager : MonoBehaviour
     public GameObject bob;
     
     [Header("Scoreboard")]
-    public Text tedScoreText;
-    public Text bobScoreText;
+    public TextMeshProUGUI tedScoreText;
+    public TextMeshProUGUI bobScoreText;
     
     // Store original positions
     private Vector3 tedOriginalPosition;
