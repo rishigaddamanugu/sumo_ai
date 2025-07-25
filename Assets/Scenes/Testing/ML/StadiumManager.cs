@@ -11,6 +11,8 @@ public class StadiumManager : MonoBehaviour
     [Header("Scoreboard")]
     public TextMeshProUGUI tedScoreText;
     public TextMeshProUGUI bobScoreText;
+    public TextMeshProUGUI roundText;
+    public TextMeshProUGUI timerText;
     
     // Store original positions
     private Vector3 tedOriginalPosition;
@@ -21,7 +23,9 @@ public class StadiumManager : MonoBehaviour
     // Score tracking
     private int tedScore = 0;
     private int bobScore = 0;
-    
+    private int round = 0;
+    private float timer = 0;
+
     void Start()
     {
         // Store original positions and rotations when the scene starts
@@ -56,6 +60,7 @@ public class StadiumManager : MonoBehaviour
             bob.transform.position = bobOriginalPosition;
             bob.transform.rotation = bobOriginalRotation;
         }
+        
     }
     
     // Score management functions
@@ -89,6 +94,34 @@ public class StadiumManager : MonoBehaviour
         {
             bobScoreText.text = "Bob: " + bobScore.ToString();
         }
+    }
+
+    public void UpdateRoundText(int round)
+    {
+        if (roundText != null)
+        {
+            roundText.text = "Round: " + round.ToString();
+        }
+    }
+
+    public void UpdateTimerText()
+    {
+        if (timerText != null)
+        {
+            timerText.text = "Timer: " + "00:30".ToString("F0");
+        }
+    }
+
+    public void IncrementRound()
+    {
+        round++;
+        UpdateRoundText();
+    }
+
+    public void resetTimer()
+    {
+        timer = 0;
+        UpdateTimerText();
     }
     
     // Getter methods for scores
