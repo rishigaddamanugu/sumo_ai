@@ -150,4 +150,8 @@ public class AgentUnit : MonoBehaviour
             _ => Vector3.zero
         };
     }
+    /* 
+    **TODO** Add a method to account for when an agent dies and somehow figure out how to make sure
+    it registers as dead and sends corresponding reward before respawning the next round.
+    */
 }
