@@ -14,7 +14,8 @@ public class DualCameraSystem : MonoBehaviour
     private float orbitSpeed = 20f; // Degrees per second
     
     [Header("Camera Switching")]
-    private float cameraSwitchInterval = 5f; // Switch every 5 seconds (same as reference)
+    private float mainCameraDuration = 10f; // Main camera stays for 10 seconds
+    private float orbitingCameraDuration = 5f; // Orbiting camera stays for 5 seconds
     private bool enableAutoSwitch = true;
     
     private Camera mainCamera;
@@ -32,8 +33,9 @@ public class DualCameraSystem : MonoBehaviour
     
     void LateUpdate()
     {
-        // Check if it's time to switch cameras (same logic as reference script)
-        if (enableAutoSwitch && Time.unscaledTime - lastSwitchTime >= cameraSwitchInterval)
+        // Check if it's time to switch cameras based on current camera duration
+        float currentDuration = isOrbitingCameraActive ? orbitingCameraDuration : mainCameraDuration;
+        if (enableAutoSwitch && Time.unscaledTime - lastSwitchTime >= currentDuration)
         {
             SwitchCamera();
             lastSwitchTime = Time.unscaledTime;
