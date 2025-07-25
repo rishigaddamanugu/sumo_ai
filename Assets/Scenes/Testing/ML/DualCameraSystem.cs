@@ -3,19 +3,19 @@ using UnityEngine;
 public class DualCameraSystem : MonoBehaviour
 {
     [Header("Main Camera Settings")]
-    [SerializeField] private Vector3 mainCameraPosition = new Vector3(0, 17, -15);
-    [SerializeField] private Vector3 mainCameraRotation = new Vector3(10, 0, 0);
-    [SerializeField] private Vector3 mainCameraScale = Vector3.one;
+    private Vector3 mainCameraPosition = new Vector3(0, 17, -15);
+    private Vector3 mainCameraRotation = new Vector3(10, 0, 0);
+    private Vector3 mainCameraScale = Vector3.one;
     
     [Header("Orbiting Camera Settings")]
-    [SerializeField] private Transform centralPlatform; // Assign in inspector
-    [SerializeField] private float orbitRadius = 20f;
-    [SerializeField] private float orbitHeight = 15f;
-    [SerializeField] private float orbitSpeed = 30f; // Degrees per second
+    public Transform centralPlatform; // Assign in inspector
+    private float orbitRadius = 20f;
+    private float orbitHeight = 15f;
+    private float orbitSpeed = 20f; // Degrees per second
     
     [Header("Camera Switching")]
-    [SerializeField] private float cameraSwitchInterval = 5f; // Switch every 5 seconds (same as reference)
-    [SerializeField] private bool enableAutoSwitch = true;
+    private float cameraSwitchInterval = 5f; // Switch every 5 seconds (same as reference)
+    private bool enableAutoSwitch = true;
     
     private Camera mainCamera;
     private Camera orbitingCamera;
@@ -130,30 +130,30 @@ public class DualCameraSystem : MonoBehaviour
 
     }
     
-    // Public methods for external control
-    public void SetOrbitSpeed(float speed)
+    // Private methods for internal control
+    private void SetOrbitSpeed(float speed)
     {
         orbitSpeed = speed;
     }
     
-    public void SetOrbitRadius(float radius)
+    private void SetOrbitRadius(float radius)
     {
         orbitRadius = radius;
     }
     
-    public void SetOrbitHeight(float height)
+    private void SetOrbitHeight(float height)
     {
         orbitHeight = height;
     }
     
-    public void ForceMainCamera()
+    private void ForceMainCamera()
     {
         isOrbitingCameraActive = false;
         mainCamera.enabled = true;
         orbitingCamera.enabled = false;
     }
     
-    public void ForceOrbitingCamera()
+    private void ForceOrbitingCamera()
     {
         isOrbitingCameraActive = true;
         mainCamera.enabled = false;
