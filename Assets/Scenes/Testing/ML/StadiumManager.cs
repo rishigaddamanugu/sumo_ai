@@ -152,6 +152,26 @@ public class StadiumManager : MonoBehaviour
         }
     }
     
+    public void OnAgentDeath(string agentName)
+    {
+        // Add score to surviving agent
+        if (agentName.Contains("Ted") || agentName.Contains("ted"))
+        {
+            AddScoreToBob(1);
+        }
+        else if (agentName.Contains("Bob") || agentName.Contains("bob"))
+        {
+            AddScoreToTed(1);
+        }
+        
+        // Reset timer
+        resetTimer();
+        IncrementRound();
+        
+        // Reset stadium positions
+        resetStadium();
+    }
+    
     // Getter methods for scores
     public int GetTedScore() { return tedScore; }
     public int GetBobScore() { return bobScore; }

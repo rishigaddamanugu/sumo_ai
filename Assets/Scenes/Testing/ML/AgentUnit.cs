@@ -19,6 +19,10 @@ public class AgentUnit : MonoBehaviour
     [SerializeField] private float moveForce = 40f;
     [SerializeField] private float moveDuration = 0f;
     
+    [Header("Death Detection")]
+    public GameObject ground;
+    private bool hasHitGround = false;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -29,6 +33,14 @@ public class AgentUnit : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         
         FindObjectOfType<AgentManager>().RegisterAgent(this);
+    }
+    
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == ground)
+        {
+            hasHitGround = true;
+        }
     }
 
     void Update()
@@ -56,6 +68,17 @@ public class AgentUnit : MonoBehaviour
 
         yield return new WaitUntil(() => gotResponse);
         hasAction = true;
+        
+        // Check for death and reset immediately after API call
+        if (hasHitGround)
+        {
+            StadiumManager stadiumManager = FindObjectOfType<StadiumManager>();
+            if (stadiumManager != null)
+            {
+                stadiumManager.OnAgentDeath(gameObject.name);
+            }
+            hasHitGround = false; // Reset the flag
+        }
     }
 
     public void ExecuteMove()
@@ -150,8 +173,4 @@ public class AgentUnit : MonoBehaviour
             _ => Vector3.zero
         };
     }
-    /* 
-    **TODO** Add a method to account for when an agent dies and somehow figure out how to make sure
-    it registers as dead and sends corresponding reward before respawning the next round.
-    */
 }
