@@ -643,6 +643,8 @@ MonoBehaviour:
   bob: {fileID: 1840713871}
   tedScoreText: {fileID: 6050056924275756635}
   bobScoreText: {fileID: 3212494669151523927}
+  roundText: {fileID: 8986153435446876239}
+  timerText: {fileID: 5889277626246591749}
 --- !u!4 &776869668
 Transform:
   m_ObjectHideFlags: 0

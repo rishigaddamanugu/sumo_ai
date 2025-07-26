@@ -13,6 +13,7 @@ public class StadiumManager : MonoBehaviour
     public TextMeshProUGUI bobScoreText;
     public TextMeshProUGUI roundText;
     public TextMeshProUGUI timerText;
+    public TextMeshProUGUI timeElapsedText;
     
     // Store original positions
     private Vector3 tedOriginalPosition;
@@ -24,7 +25,8 @@ public class StadiumManager : MonoBehaviour
     private int tedScore = 0;
     private int bobScore = 0;
     private int round = 0;
-    private float timer = 0;
+    private int timer = 30;
+    private float timeElapsed = 0f;
 
     void Start()
     {
@@ -43,6 +45,19 @@ public class StadiumManager : MonoBehaviour
         
         // Initialize scoreboard
         UpdateScoreboard();
+        UpdateTimerText(timer);
+    }
+    
+    void Update()
+    {
+        // Update the running stopwatch
+        timeElapsed += Time.deltaTime;
+        
+        // Update timer display every frame
+        UpdateTimerText(timer);
+        
+        // Update time elapsed display
+        UpdateTimeElapsedText();
     }
     
     public void resetStadium()
@@ -60,6 +75,10 @@ public class StadiumManager : MonoBehaviour
             bob.transform.position = bobOriginalPosition;
             bob.transform.rotation = bobOriginalRotation;
         }
+
+        // Reset timer
+        resetTimer();
+        IncrementRound();
         
     }
     
@@ -104,13 +123,14 @@ public class StadiumManager : MonoBehaviour
         }
     }
 
-    public void UpdateTimerText()
+    public void UpdateTimerText(int timer)
     {
         if (timerText != null)
         {
-            timerText.text = "Timer: " + "00:30";
+            timerText.text = "Timer: " + "00:" + timer.ToString("D2");
         }
     }
+
 
     public void IncrementRound()
     {
@@ -120,8 +140,16 @@ public class StadiumManager : MonoBehaviour
 
     public void resetTimer()
     {
-        timer = 0;
-        UpdateTimerText();
+        timer = 30;
+        UpdateTimerText(timer);
+    }
+    
+    public void UpdateTimeElapsedText()
+    {
+        if (timeElapsedText != null)
+        {
+            timeElapsedText.text = "Time: " + timeElapsed.ToString("F1") + "s";
+        }
     }
     
     // Getter methods for scores
