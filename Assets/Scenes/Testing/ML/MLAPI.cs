@@ -14,15 +14,20 @@ public static class MLAPI
 
         UnityWebRequest request = UnityWebRequest.Post($"{baseUrl}/get_next_action", jsonPayload, "application/json");
         request.SetRequestHeader("Accept", "application/json");
-        request.timeout = 10; // tolerate up to 10 seconds
+        request.timeout = 60; // tolerate up to 60 seconds
 
         yield return request.SendWebRequest();
 
         if (request.result != UnityWebRequest.Result.Success)
         {
-            Debug.LogWarning($"[MLAPI] Request failed: {request.error}");
-            callback?.Invoke(null);
-            yield break;
+            Debug.LogError($"[MLAPI] Request failed: {request.error}. Terminating game.");
+            // callback?.Invoke(null);
+            // #if UNITY_EDITOR
+            //     UnityEditor.EditorApplication.isPlaying = false;
+            // #else
+            //     Application.Quit();
+            // #endif
+            // yield break;
         }
 
         DirectionResponse response = JsonUtility.FromJson<DirectionResponse>(request.downloadHandler.text);

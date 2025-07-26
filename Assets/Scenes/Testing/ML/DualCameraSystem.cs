@@ -107,9 +107,12 @@ public class DualCameraSystem : MonoBehaviour
         // Look at the central platform
         orbitingCamera.transform.LookAt(centralPlatform.position);
         
-        // Update orbit angle (independent of time/game speed)
-        orbitAngle += orbitSpeed * Time.unscaledDeltaTime;
-        if (orbitAngle >= 360f) orbitAngle -= 360f;
+        // Update orbit angle (independent of game speed but stops when paused)
+        if (Time.timeScale > 0f)
+        {
+            orbitAngle += orbitSpeed * Time.unscaledDeltaTime;
+            if (orbitAngle >= 360f) orbitAngle -= 360f;
+        }
     }
     
     private void SwitchCamera()
