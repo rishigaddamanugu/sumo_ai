@@ -65,8 +65,10 @@ public class AgentUnit : MonoBehaviour
         // Check for death and reset immediately after API call
         if (ground != null)
         {
-            float distance = Vector3.Distance(transform.position, ground.transform.position);
-            if (distance < 1f) // Adjust threshold as needed
+            float groundY = ground.transform.position.y;
+            float agentY = transform.position.y;
+            float heightDistance = Mathf.Abs(agentY - groundY);
+            if (heightDistance < 1f) // Adjust threshold as needed
             {
                 StadiumManager stadiumManager = FindObjectOfType<StadiumManager>();
                 if (stadiumManager != null)

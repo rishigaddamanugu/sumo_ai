@@ -3,9 +3,12 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import random
+import time
+import json
+import os
 
 class Model(nn.Module):
-    def __init__(self, state_dim, action_dim, trajectory_length=10):
+    def __init__(self, state_dim, action_dim, trajectory_length=30):
         super(Model, self).__init__()
 
         self.fc1 = nn.Linear(state_dim, 128)
@@ -68,7 +71,14 @@ class Model(nn.Module):
         # Safety check: ensure we have enough data to train
         if len(self.states) < 2 or len(self.actions) < 2 or len(self.rewards) < 2:
             return
-            
+        
+        # Save the training data
+        self.save_training_data()
+        
+        # Add 30-second delay
+        print("Training completed. Waiting 30 seconds before next training cycle...")
+        time.sleep(30)
+        
         # Convert lists to numpy arrays first for better performance
         # Note: rewards[1:] corresponds to states[:-1] and actions[:-1]
         # because reward is received after taking an action
@@ -101,3 +111,27 @@ class Model(nn.Module):
         self.actions = []
         self.rewards = []
         self.current_trajectory += 1
+
+    def save_training_data(self):
+        """Save the current training data (rewards, states, actions) to a JSON file"""
+        # Create data directory if it doesn't exist
+        data_dir = "training_data"
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+        
+        # Prepare data for saving
+        training_data = {
+            "trajectory_number": self.current_trajectory,
+            "timestamp": time.time(),
+            "rewards": [float(r) for r in self.rewards],
+            "states": [state.tolist() if hasattr(state, 'tolist') else state for state in self.states],
+            "actions": [action.tolist() if hasattr(action, 'tolist') else action for action in self.actions],
+            "trajectory_length": len(self.states)
+        }
+        
+        # Save to file with timestamp
+        filename = f"{data_dir}/training_data_trajectory_{self.current_trajectory}_{int(time.time())}.json"
+        with open(filename, 'w') as f:
+            json.dump(training_data, f, indent=2)
+        
+        print(f"Training data saved to: {filename}")

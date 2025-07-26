@@ -39,8 +39,10 @@ public class RewardFunction : MonoBehaviour
         // If agent has hit ground, return very negative reward
         if (ground != null)
         {
-            float agentDistance = Vector3.Distance(transform.position, ground.transform.position);
-            if (agentDistance < 1f) // Adjust threshold as needed
+            float groundY = ground.transform.position.y;
+            float agentY = transform.position.y;
+            float agentHeightDistance = Mathf.Abs(agentY - groundY);
+            if (agentHeightDistance < 1f) // Adjust threshold as needed
             {
                 return -100f; // Very negative reward for falling off
             }
@@ -49,8 +51,10 @@ public class RewardFunction : MonoBehaviour
         // If opponent has hit ground, return super positive reward
         if (opponent != null && ground != null)
         {
-            float opponentDistance = Vector3.Distance(opponent.transform.position, ground.transform.position);
-            if (opponentDistance < 1f) // Adjust threshold as needed
+            float groundY = ground.transform.position.y;
+            float opponentY = opponent.transform.position.y;
+            float opponentHeightDistance = Mathf.Abs(opponentY - groundY);
+            if (opponentHeightDistance < 1f) // Adjust threshold as needed
             {
                 return 100f; // Super positive reward for opponent falling
             }

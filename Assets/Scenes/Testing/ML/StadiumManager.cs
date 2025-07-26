@@ -155,6 +155,7 @@ public class StadiumManager : MonoBehaviour
     public void OnAgentDeath(string agentName)
     {
         // Add score to surviving agent
+        Debug.Log("Agent " + agentName + " has died");
         if (agentName.Contains("Ted") || agentName.Contains("ted"))
         {
             AddScoreToBob(1);
