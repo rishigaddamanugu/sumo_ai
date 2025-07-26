@@ -21,7 +21,6 @@ public class AgentUnit : MonoBehaviour
     
     [Header("Death Detection")]
     public GameObject ground;
-    private bool hasHitGround = false;
     
     void Start()
     {
@@ -35,13 +34,7 @@ public class AgentUnit : MonoBehaviour
         FindObjectOfType<AgentManager>().RegisterAgent(this);
     }
     
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject == ground)
-        {
-            hasHitGround = true;
-        }
-    }
+
 
     void Update()
     {
@@ -70,14 +63,17 @@ public class AgentUnit : MonoBehaviour
         hasAction = true;
         
         // Check for death and reset immediately after API call
-        if (hasHitGround)
+        if (ground != null)
         {
-            StadiumManager stadiumManager = FindObjectOfType<StadiumManager>();
-            if (stadiumManager != null)
+            float distance = Vector3.Distance(transform.position, ground.transform.position);
+            if (distance < 1f) // Adjust threshold as needed
             {
-                stadiumManager.OnAgentDeath(gameObject.name);
+                StadiumManager stadiumManager = FindObjectOfType<StadiumManager>();
+                if (stadiumManager != null)
+                {
+                    stadiumManager.OnAgentDeath(gameObject.name);
+                }
             }
-            hasHitGround = false; // Reset the flag
         }
     }
 
