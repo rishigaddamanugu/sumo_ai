@@ -108,14 +108,14 @@ public class StadiumManager : MonoBehaviour
     {
         if (timerText != null)
         {
-            timerText.text = "Timer: " + "00:30".ToString("F0");
+            timerText.text = "Timer: " + "00:30";
         }
     }
 
     public void IncrementRound()
     {
         round++;
-        UpdateRoundText();
+        UpdateRoundText(round);
     }
 
     public void resetTimer()
