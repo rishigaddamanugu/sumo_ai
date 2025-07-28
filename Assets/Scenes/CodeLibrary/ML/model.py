@@ -76,11 +76,11 @@ class Model(nn.Module):
             return
         
         # # Save the training data
-        # self.save_training_data()
+        self.save_training_data()
         
         # # Add 40-second delay
         # print("Training completed. Waiting 40 seconds before next training cycle...")
-        # time.sleep(40)
+        time.sleep(40)
         
         # Convert lists to numpy arrays first for better performance
         # Note: rewards[1:] corresponds to states[:-1] and actions[:-1]

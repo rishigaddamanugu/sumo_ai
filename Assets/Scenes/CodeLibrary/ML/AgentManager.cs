@@ -97,6 +97,36 @@ public class AgentManager : MonoBehaviour
         }
     }
 
+    public IEnumerator AgentDeathResetLoop(string agentName)
+    {
+        isWaitingForResponses = true;
+
+        // Store current time scale before pausing
+        previousTimeScale = Time.timeScale;
+        
+        // Pause the game
+        Time.timeScale = 0f;
+
+        StadiumManager stadiumManager = FindObjectOfType<StadiumManager>();
+        if (stadiumManager != null)
+        {
+            stadiumManager.OnAgentDeath(agentName);
+        }
+
+        // Resume game with the previous time scale
+        Time.timeScale = previousTimeScale;
+        
+        // Show speed display again if speed > 1x
+        if (previousTimeScale > 1f)
+        {
+            UpdateSpeedDisplay(previousTimeScale);
+        }
+
+        isWaitingForResponses = false;
+        
+        yield return null; // Make it a proper coroutine
+    }
+
     IEnumerator ProcessAllAgentsParallel()
     {
         if (agents.Count == 0) yield break;
