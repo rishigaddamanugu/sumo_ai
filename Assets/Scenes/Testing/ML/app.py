@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import time
 import random
 import threading
 from model import Model
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Global thread lock to make the entire application single-threaded
 _model_lock = threading.Lock()

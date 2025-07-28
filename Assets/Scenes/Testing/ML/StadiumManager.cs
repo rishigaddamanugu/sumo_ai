@@ -53,11 +53,18 @@ public class StadiumManager : MonoBehaviour
         // Update the running stopwatch
         timeElapsed += Time.deltaTime;
         
+        // Countdown timer
+        if (timer > 0)
+        {
+            timer -= (int)Time.deltaTime;
+            if (timer <= 0) resetStadium();
+        }
+        
         // Update timer display every frame
         UpdateTimerText(timer);
         
         // Update time elapsed display
-        UpdateTimeElapsedText();
+        UpdateTimeElapsedText(timeElapsed);
     }
     
     public void resetStadium()
@@ -144,11 +151,11 @@ public class StadiumManager : MonoBehaviour
         UpdateTimerText(timer);
     }
     
-    public void UpdateTimeElapsedText()
+    public void UpdateTimeElapsedText(float timeElapsed)
     {
         if (timeElapsedText != null)
         {
-            timeElapsedText.text = "Time: " + timeElapsed.ToString("F1") + "s";
+            timeElapsedText.text = "Elapsed Time: " + timeElapsed.ToString("F1") + "s";
         }
     }
     
@@ -156,6 +163,7 @@ public class StadiumManager : MonoBehaviour
     {
         // Add score to surviving agent
         Debug.Log("Agent " + agentName + " has died");
+        
         if (agentName.Contains("Ted") || agentName.Contains("ted"))
         {
             AddScoreToBob(1);
