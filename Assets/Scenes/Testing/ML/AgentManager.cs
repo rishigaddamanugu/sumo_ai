@@ -108,12 +108,6 @@ public class AgentManager : MonoBehaviour
         
         // Pause the game once for all agents
         Time.timeScale = 0f;
-        
-        // // Hide speed display during pause
-        // if (speedDisplayUI != null)
-        // {
-        //     speedDisplayUI.HideSpeedText();
-        // }
 
         // Start all agents making their API calls simultaneously
         var agentCoroutines = new List<Coroutine>();

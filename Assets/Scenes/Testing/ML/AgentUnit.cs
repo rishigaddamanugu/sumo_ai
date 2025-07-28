@@ -68,7 +68,8 @@ public class AgentUnit : MonoBehaviour
             float groundY = ground.transform.position.y;
             float agentY = transform.position.y;
             float heightDistance = Mathf.Abs(agentY - groundY);
-            if (heightDistance < 1f) // Adjust threshold as needed
+            Debug.Log("Height distance: " + heightDistance);
+            if (heightDistance < 1.5f) // Adjust threshold as needed
             {
                 StadiumManager stadiumManager = FindObjectOfType<StadiumManager>();
                 if (stadiumManager != null)
