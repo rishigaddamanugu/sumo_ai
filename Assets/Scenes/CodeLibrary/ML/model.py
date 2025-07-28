@@ -42,7 +42,10 @@ class Model(nn.Module):
         confidence = torch.max(action_probs).item()
         
         # Determine which action to take
-        if confidence < 0.4:
+        # 10% chance to take random action for exploration
+        if random.random() < 0.1:
+            action_idx = random.randint(0, 3)
+        elif confidence < 0.4:
             # Use random action when confidence is low
             action_idx = random.randint(0, 3)
         else:

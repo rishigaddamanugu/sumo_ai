@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PORTS=(5000)
+PORTS=(5001)
 
 for PORT in "${PORTS[@]}"
 do
