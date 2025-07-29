@@ -68,18 +68,6 @@ public class AgentUnit : MonoBehaviour
 
         yield return new WaitUntil(() => gotResponse);
         hasAction = true;
-        
-        // Check for death and reset immediately after API call
-        if (ground != null)
-        {
-            float groundY = ground.transform.position.y;
-            float agentY = transform.position.y;
-            float heightDistance = Mathf.Abs(agentY - groundY);
-            if (heightDistance < 1.5f) // Adjust threshold as needed
-            {
-                isDead = true;
-            }
-        }
     }
 
     public void ExecuteMove()
@@ -97,6 +85,18 @@ public class AgentUnit : MonoBehaviour
         
         hasAction = false;
         pendingAction = null;
+
+                // Check for death and reset immediately after API call
+        if (ground != null)
+        {
+            float groundY = ground.transform.position.y;
+            float agentY = transform.position.y;
+            float heightDistance = Mathf.Abs(agentY - groundY);
+            if (heightDistance < 1.5f) // Adjust threshold as needed
+            {
+                isDead = true;
+            }
+        }
     }
 
     private IEnumerator StopMovementAfterDelay()

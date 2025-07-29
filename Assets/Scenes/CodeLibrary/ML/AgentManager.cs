@@ -145,6 +145,11 @@ public class AgentManager : MonoBehaviour
         {
             agentCoroutines.Add(StartCoroutine(agent.RequestAction()));
         }
+
+        // For aesthetic purposes, it will not perform the action on death but model will still register it
+        // The model will still receive the death state and give an action
+        // This means the model interprets this as the action taken in death state led to positive reward when respawned
+        // This is subideal, but we can handle this on the model side instead of here
         bool anyAgentDied = false;
         foreach (var agent in agents)
         {
