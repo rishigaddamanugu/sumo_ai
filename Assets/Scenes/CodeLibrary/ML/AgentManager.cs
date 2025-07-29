@@ -145,6 +145,21 @@ public class AgentManager : MonoBehaviour
         {
             agentCoroutines.Add(StartCoroutine(agent.RequestAction()));
         }
+        bool anyAgentDied = false;
+        foreach (var agent in agents)
+        {
+            if (agent.IsDead())
+            {
+                agent.SetDeathState(false);
+                StartCoroutine(AgentDeathResetLoop(agent.name));
+                anyAgentDied = true;
+            }
+        }
+
+        if (anyAgentDied)
+        {
+            yield return null;
+        }
 
         // Wait for ALL agents to complete their API calls
         foreach (var coroutine in agentCoroutines)

@@ -3,6 +3,7 @@ using System.Collections;
 
 public class AgentUnit : MonoBehaviour
 {
+    private bool isDead = false;
     private bool isMoving = false;
     private string pendingAction = null;
     private bool hasAction = false;
@@ -35,6 +36,12 @@ public class AgentUnit : MonoBehaviour
     }
     
 
+    public bool IsDead() => isDead;
+
+    public void SetDeathState(bool state)
+    {
+        isDead = state;
+    }
 
     void Update()
     {
@@ -70,11 +77,7 @@ public class AgentUnit : MonoBehaviour
             float heightDistance = Mathf.Abs(agentY - groundY);
             if (heightDistance < 1.5f) // Adjust threshold as needed
             {
-                AgentManager agentManager = FindObjectOfType<AgentManager>();
-                if (agentManager != null)
-                {
-                    StartCoroutine(agentManager.AgentDeathResetLoop(gameObject.name));
-                }
+                isDead = true;
             }
         }
     }
