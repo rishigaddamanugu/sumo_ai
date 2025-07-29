@@ -102,10 +102,10 @@ public class AgentManager : MonoBehaviour
         isWaitingForResponses = true;
 
         // Store current time scale before pausing
-        previousTimeScale = Time.timeScale;
+        // previousTimeScale = Time.timeScale;
         
         // Pause the game
-        Time.timeScale = 0f;
+        // Time.timeScale = 0f;
 
         StadiumManager stadiumManager = FindObjectOfType<StadiumManager>();
         if (stadiumManager != null)
@@ -114,13 +114,13 @@ public class AgentManager : MonoBehaviour
         }
 
         // Resume game with the previous time scale
-        Time.timeScale = previousTimeScale;
+        // Time.timeScale = previousTimeScale;
         
         // Show speed display again if speed > 1x
-        if (previousTimeScale > 1f)
-        {
-            UpdateSpeedDisplay(previousTimeScale);
-        }
+        // if (previousTimeScale > 1f)
+        // {
+        //     UpdateSpeedDisplay(previousTimeScale);
+        // }
 
         isWaitingForResponses = false;
         
@@ -163,6 +163,8 @@ public class AgentManager : MonoBehaviour
 
         if (anyAgentDied)
         {
+            // Resume game with the previous time scale
+            Time.timeScale = previousTimeScale;
             yield break; // Terminate coroutine when agent dies
         }
 
