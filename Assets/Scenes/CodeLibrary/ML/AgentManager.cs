@@ -163,7 +163,7 @@ public class AgentManager : MonoBehaviour
 
         if (anyAgentDied)
         {
-            yield return null;
+            yield break; // Terminate coroutine when agent dies
         }
 
         // Wait for ALL agents to complete their API calls
