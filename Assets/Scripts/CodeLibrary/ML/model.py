@@ -20,6 +20,7 @@ class Model(nn.Module):
         self.rewards = []
         self.trajectory_length = trajectory_length
         self.current_trajectory = 0
+        self.iteration = 0
 
         self.optimizer = optim.Adam(self.parameters(), lr=0.001)
         self.criterion = nn.MSELoss(reduction='none')
@@ -36,6 +37,7 @@ class Model(nn.Module):
 
     def predict(self, state, reward):
         # Convert state to tensor and predict action
+        self.iteration += 1
         state_tensor = torch.tensor(state, dtype=torch.float32)
         action_probs = self.forward(state_tensor)
         
@@ -94,6 +96,8 @@ class Model(nn.Module):
         states = torch.tensor(np.array(self.states[:-1]), dtype=torch.float32)  # Remove last state
         actions = torch.tensor(np.array(self.actions[:-1]), dtype=torch.float32)  # Remove last action
 
+        self.save_average_trajectory_reward(rewards)
+
         # Normalize rewards
         reward_mean = rewards.mean()
         reward_std = rewards.std()
@@ -119,6 +123,37 @@ class Model(nn.Module):
         self.actions = []
         self.rewards = []
         self.current_trajectory += 1
+
+    def save_average_trajectory_reward(self, rewards):
+        """Save the average trajectory reward to a JSON file"""
+        data_dir = "reward_trends"
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+        
+        filename = f"{data_dir}/average_reward_{int(time.time())}.json"
+        
+        if self.iteration == 0:
+            # Create new file and overwrite
+            if rewards:
+                average_reward = sum(rewards) / len(rewards)
+                with open(filename, 'w') as f:
+                    json.dump({"average_reward": average_reward, "rewards": rewards.tolist()}, f, indent=2)
+        else:
+            # Append to existing file
+            existing_rewards = []
+            if os.path.exists(filename):
+                with open(filename, 'r') as f:
+                    data = json.load(f)
+                    existing_rewards = data["rewards"]
+            
+            # Append new rewards
+            all_rewards = existing_rewards + rewards.tolist()
+            
+            if all_rewards:
+                average_reward = sum(all_rewards) / len(all_rewards)
+                with open(filename, 'w') as f:
+                    json.dump({"average_reward": average_reward, "rewards": all_rewards}, f, indent=2)
+
 
     def save_training_data(self):
         """Save the current training data (rewards, states, actions) to a JSON file"""
