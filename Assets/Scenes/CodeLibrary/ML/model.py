@@ -8,7 +8,7 @@ import json
 import os
 
 class Model(nn.Module):
-    def __init__(self, state_dim, action_dim, trajectory_length=30):
+    def __init__(self, state_dim, action_dim, trajectory_length=128):
         super(Model, self).__init__()
 
         self.fc1 = nn.Linear(state_dim, 128)
@@ -23,6 +23,7 @@ class Model(nn.Module):
 
         self.optimizer = optim.Adam(self.parameters(), lr=0.001)
         self.criterion = nn.MSELoss(reduction='none')
+        self.second_last = False
 
     def forward(self, x):
         x = torch.relu(self.fc1(x))
@@ -63,7 +64,11 @@ class Model(nn.Module):
         self.rewards.append(reward)
 
         # Train when we have enough transitions
-        if len(self.states) >= self.trajectory_length:
+        if self.second_last:
+            self.train_with_reward_scaling()
+        elif reward == -100:
+            self.second_last = True
+        elif len(self.states) >= self.trajectory_length:
             self.train_with_reward_scaling()
 
         # Return the action that was actually taken
@@ -80,7 +85,7 @@ class Model(nn.Module):
         
         # # Add 40-second delay
         # print("Training completed. Waiting 40 seconds before next training cycle...")
-        time.sleep(40)
+        # time.sleep(40)
         
         # Convert lists to numpy arrays first for better performance
         # Note: rewards[1:] corresponds to states[:-1] and actions[:-1]
@@ -127,7 +132,7 @@ class Model(nn.Module):
             "trajectory_number": self.current_trajectory,
             "timestamp": time.time(),
             "rewards": [float(r) for r in self.rewards],
-            "states": [state.tolist() if hasattr(state, 'tolist') else state for state in self.states],
+            "states": [state[1] for state in self.states],  # Only save y position (index 1)
             "actions": [action.tolist() if hasattr(action, 'tolist') else action for action in self.actions],
             "trajectory_length": len(self.states)
         }

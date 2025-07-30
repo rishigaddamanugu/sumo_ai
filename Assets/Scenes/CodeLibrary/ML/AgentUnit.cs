@@ -92,7 +92,8 @@ public class AgentUnit : MonoBehaviour
             float groundY = ground.transform.position.y;
             float agentY = transform.position.y;
             float heightDistance = Mathf.Abs(agentY - groundY);
-            if (heightDistance < 1.5f) // Adjust threshold as needed
+            // Had to adjust threshold since ML model was double counting death on the fall to ground
+            if (heightDistance < 1.19f) // Adjust threshold as needed
             {
                 isDead = true;
             }
