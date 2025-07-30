@@ -66,11 +66,7 @@ class Model(nn.Module):
         self.rewards.append(reward)
 
         # Train when we have enough transitions
-        if self.second_last:
-            self.train_with_reward_scaling()
-        elif reward == -100:
-            self.second_last = True
-        elif len(self.states) >= self.trajectory_length:
+        if len(self.states) >= self.trajectory_length:
             self.train_with_reward_scaling()
 
         # Return the action that was actually taken
@@ -96,7 +92,6 @@ class Model(nn.Module):
         states = torch.tensor(np.array(self.states[:-1]), dtype=torch.float32)  # Remove last state
         actions = torch.tensor(np.array(self.actions[:-1]), dtype=torch.float32)  # Remove last action
 
-        self.save_average_trajectory_reward(rewards)
 
         # Normalize rewards
         reward_mean = rewards.mean()
@@ -124,39 +119,31 @@ class Model(nn.Module):
         self.rewards = []
         self.current_trajectory += 1
 
+        self.save_average_trajectory_reward(rewards)
+
     def save_average_trajectory_reward(self, rewards):
-        """Save the average trajectory reward to a JSON file"""
+        """Save the average trajectory reward to a txt file"""
         data_dir = "reward_trends"
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
         
-        filename = f"{data_dir}/average_reward_{self.iteration}.json"
+        filename = f"{data_dir}/rewards.txt"
         
         if self.iteration == 0:
             # Create new file and overwrite
             if rewards:
-                average_reward = sum(rewards) / len(rewards)
                 with open(filename, 'w') as f:
-                    json.dump({"average_reward": average_reward, "rewards": rewards.tolist()}, f, indent=2)
+                    for reward in rewards:
+                        f.write(f"{reward}\n")
                 # Generate graph after creating new file
                 self.graph_reward_trends()
         else:
             # Append to existing file
-            existing_rewards = []
-            if os.path.exists(filename):
-                with open(filename, 'r') as f:
-                    data = json.load(f)
-                    existing_rewards = data["rewards"]
-            
-            # Append new rewards
-            all_rewards = existing_rewards + rewards.tolist()
-            
-            if all_rewards:
-                average_reward = sum(all_rewards) / len(all_rewards)
-                with open(filename, 'w') as f:
-                    json.dump({"average_reward": average_reward, "rewards": all_rewards}, f, indent=2)
-                # Generate updated graph after appending
-                self.graph_reward_trends()
+            with open(filename, 'a') as f:
+                for reward in rewards:
+                    f.write(f"{reward}\n")
+            # Generate updated graph after appending
+            self.graph_reward_trends()
 
     
     def graph_reward_trends(self):
@@ -167,12 +154,11 @@ class Model(nn.Module):
             matplotlib.use('Agg')  # Use non-interactive backend
             
             data_dir = "reward_trends"
-            filename = f"{data_dir}/average_reward_{self.iteration}.json"
+            filename = f"{data_dir}/rewards.txt"
             
             if os.path.exists(filename):
                 with open(filename, 'r') as f:
-                    data = json.load(f)
-                    rewards = data["rewards"]
+                    rewards = [float(line.strip()) for line in f.readlines() if line.strip()]
                 
                 if rewards:
                     # Create the plot
