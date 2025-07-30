@@ -43,16 +43,9 @@ public class RewardFunction : MonoBehaviour
             float agentY = transform.position.y;
             float agentHeightDistance = Mathf.Abs(agentY - groundY);
             
-            // Debug logging for death detection
-            if (agentHeightDistance < 2f) // Log when close to death threshold
-            {
-                Debug.Log($"[RewardFunction] Agent close to ground: Y={agentY}, GroundY={groundY}, Distance={agentHeightDistance}");
-            }
-            
             // Had to adjust threshold since ML model was double counting death on the fall to ground
             if (agentHeightDistance < 1.19f) // Match the threshold used in AgentUnit
             {
-                Debug.Log($"[RewardFunction] AGENT DIED! Returning -100 reward. Y={agentY}, GroundY={groundY}, Distance={agentHeightDistance}");
                 return -100f; // Very negative reward for falling off
             }
         }
