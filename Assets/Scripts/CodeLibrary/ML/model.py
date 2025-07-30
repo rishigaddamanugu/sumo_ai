@@ -130,7 +130,7 @@ class Model(nn.Module):
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
         
-        filename = f"{data_dir}/average_reward_{int(time.time())}.json"
+        filename = f"{data_dir}/average_reward_{self.iteration}.json"
         
         if self.iteration == 0:
             # Create new file and overwrite
@@ -167,7 +167,7 @@ class Model(nn.Module):
             matplotlib.use('Agg')  # Use non-interactive backend
             
             data_dir = "reward_trends"
-            filename = f"{data_dir}/average_reward_{int(time.time())}.json"
+            filename = f"{data_dir}/average_reward_{self.iteration}.json"
             
             if os.path.exists(filename):
                 with open(filename, 'r') as f:
@@ -191,7 +191,7 @@ class Model(nn.Module):
                         plt.plot(moving_avg, 'g-', linewidth=2, alpha=0.8, label=f'Moving Average (window={window_size})')
                         plt.legend()
                     
-                    plt.title('Reward Trends Over Time')
+                    plt.title(f'Reward Trends Over Time (Iteration {self.iteration})')
                     plt.xlabel('Training Step')
                     plt.ylabel('Reward')
                     plt.grid(True, alpha=0.3)
@@ -227,7 +227,7 @@ class Model(nn.Module):
         }
         
         # Save to file with timestamp
-        filename = f"{data_dir}/training_data_trajectory_{self.current_trajectory}_{int(time.time())}.json"
+        filename = f"{data_dir}/training_data_trajectory_{self.current_trajectory}_{self.iteration}.json"
         with open(filename, 'w') as f:
             json.dump(training_data, f, indent=2)
         
