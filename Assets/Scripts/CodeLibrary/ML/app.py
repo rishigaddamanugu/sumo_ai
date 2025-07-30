@@ -13,6 +13,10 @@ _model_lock = threading.Lock()
 
 model = Model(state_dim=6, action_dim=4)
 
+@app.route("/ping")
+def ping():
+    return "pong", 200
+
 @app.route("/get_next_action", methods=["POST"])
 def get_next_action():
     # Global lock makes this entire endpoint single-threaded
