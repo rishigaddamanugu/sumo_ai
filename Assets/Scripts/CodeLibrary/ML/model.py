@@ -21,6 +21,7 @@ class Model(nn.Module):
         self.trajectory_length = trajectory_length
         self.current_trajectory = 0
         self.iteration = 0
+        self.total_rewards = []
 
         self.optimizer = optim.Adam(self.parameters(), lr=0.001)
         self.criterion = nn.MSELoss(reduction='none')
@@ -119,102 +120,4 @@ class Model(nn.Module):
         self.rewards = []
         self.current_trajectory += 1
 
-        self.save_average_trajectory_reward(rewards)
-
-    def save_average_trajectory_reward(self, rewards):
-        """Save the average trajectory reward to a txt file"""
-        data_dir = "reward_trends"
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)
-        
-        filename = f"{data_dir}/rewards.txt"
-        
-        if self.iteration == 0:
-            # Create new file and overwrite
-            if rewards:
-                with open(filename, 'w') as f:
-                    for reward in rewards:
-                        f.write(f"{reward}\n")
-                # Generate graph after creating new file
-                self.graph_reward_trends()
-        else:
-            # Append to existing file
-            with open(filename, 'a') as f:
-                for reward in rewards:
-                    f.write(f"{reward}\n")
-            # Generate updated graph after appending
-            self.graph_reward_trends()
-
-    
-    def graph_reward_trends(self):
-        """Graph the reward trends"""
-        try:
-            import matplotlib.pyplot as plt
-            import matplotlib
-            matplotlib.use('Agg')  # Use non-interactive backend
-            
-            data_dir = "reward_trends"
-            filename = f"{data_dir}/rewards.txt"
-            
-            if os.path.exists(filename):
-                with open(filename, 'r') as f:
-                    rewards = [float(line.strip()) for line in f.readlines() if line.strip()]
-                
-                if rewards:
-                    # Create the plot
-                    plt.figure(figsize=(10, 6))
-                    plt.plot(rewards, 'b-', linewidth=1, alpha=0.7)
-                    plt.scatter(range(len(rewards)), rewards, c='red', s=20, alpha=0.6)
-                    
-                    # Add moving average line
-                    if len(rewards) > 10:
-                        window_size = min(10, len(rewards) // 4)
-                        moving_avg = []
-                        for i in range(len(rewards)):
-                            start = max(0, i - window_size // 2)
-                            end = min(len(rewards), i + window_size // 2 + 1)
-                            moving_avg.append(sum(rewards[start:end]) / (end - start))
-                        plt.plot(moving_avg, 'g-', linewidth=2, alpha=0.8, label=f'Moving Average (window={window_size})')
-                        plt.legend()
-                    
-                    plt.title(f'Reward Trends Over Time (Iteration {self.iteration})')
-                    plt.xlabel('Training Step')
-                    plt.ylabel('Reward')
-                    plt.grid(True, alpha=0.3)
-                    
-                    # Save the plot
-                    plot_filename = f"{data_dir}/reward_trends_plot.png"
-                    plt.savefig(plot_filename, dpi=300, bbox_inches='tight')
-                    plt.close()
-                    
-                    print(f"Reward trends plot saved to: {plot_filename}")
-                    
-        except ImportError:
-            print("matplotlib not available, skipping reward trend plotting")
-        except Exception as e:
-            print(f"Error creating reward trend plot: {e}")
-
-
-    def save_training_data(self):
-        """Save the current training data (rewards, states, actions) to a JSON file"""
-        # Create data directory if it doesn't exist
-        data_dir = "training_data"
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)
-        
-        # Prepare data for saving
-        training_data = {
-            "trajectory_number": self.current_trajectory,
-            "timestamp": time.time(),
-            "rewards": [float(r) for r in self.rewards],
-            "states": [state[1] for state in self.states],  # Only save y position (index 1)
-            "actions": [action.tolist() if hasattr(action, 'tolist') else action for action in self.actions],
-            "trajectory_length": len(self.states)
-        }
-        
-        # Save to file with timestamp
-        filename = f"{data_dir}/training_data_trajectory_{self.current_trajectory}_{self.iteration}.json"
-        with open(filename, 'w') as f:
-            json.dump(training_data, f, indent=2)
-        
-        print(f"Training data saved to: {filename}")
+        self.total_rewards.append(rewards)
