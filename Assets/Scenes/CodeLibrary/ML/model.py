@@ -81,7 +81,7 @@ class Model(nn.Module):
             return
         
         # # Save the training data
-        self.save_training_data()
+        # self.save_training_data()
         
         # # Add 40-second delay
         # print("Training completed. Waiting 40 seconds before next training cycle...")
