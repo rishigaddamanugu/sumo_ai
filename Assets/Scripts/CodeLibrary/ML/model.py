@@ -138,6 +138,8 @@ class Model(nn.Module):
                 average_reward = sum(rewards) / len(rewards)
                 with open(filename, 'w') as f:
                     json.dump({"average_reward": average_reward, "rewards": rewards.tolist()}, f, indent=2)
+                # Generate graph after creating new file
+                self.graph_reward_trends()
         else:
             # Append to existing file
             existing_rewards = []
@@ -153,6 +155,58 @@ class Model(nn.Module):
                 average_reward = sum(all_rewards) / len(all_rewards)
                 with open(filename, 'w') as f:
                     json.dump({"average_reward": average_reward, "rewards": all_rewards}, f, indent=2)
+                # Generate updated graph after appending
+                self.graph_reward_trends()
+
+    
+    def graph_reward_trends(self):
+        """Graph the reward trends"""
+        try:
+            import matplotlib.pyplot as plt
+            import matplotlib
+            matplotlib.use('Agg')  # Use non-interactive backend
+            
+            data_dir = "reward_trends"
+            filename = f"{data_dir}/average_reward_{int(time.time())}.json"
+            
+            if os.path.exists(filename):
+                with open(filename, 'r') as f:
+                    data = json.load(f)
+                    rewards = data["rewards"]
+                
+                if rewards:
+                    # Create the plot
+                    plt.figure(figsize=(10, 6))
+                    plt.plot(rewards, 'b-', linewidth=1, alpha=0.7)
+                    plt.scatter(range(len(rewards)), rewards, c='red', s=20, alpha=0.6)
+                    
+                    # Add moving average line
+                    if len(rewards) > 10:
+                        window_size = min(10, len(rewards) // 4)
+                        moving_avg = []
+                        for i in range(len(rewards)):
+                            start = max(0, i - window_size // 2)
+                            end = min(len(rewards), i + window_size // 2 + 1)
+                            moving_avg.append(sum(rewards[start:end]) / (end - start))
+                        plt.plot(moving_avg, 'g-', linewidth=2, alpha=0.8, label=f'Moving Average (window={window_size})')
+                        plt.legend()
+                    
+                    plt.title('Reward Trends Over Time')
+                    plt.xlabel('Training Step')
+                    plt.ylabel('Reward')
+                    plt.grid(True, alpha=0.3)
+                    
+                    # Save the plot
+                    plot_filename = f"{data_dir}/reward_trends_plot.png"
+                    plt.savefig(plot_filename, dpi=300, bbox_inches='tight')
+                    plt.close()
+                    
+                    print(f"Reward trends plot saved to: {plot_filename}")
+                    
+        except ImportError:
+            print("matplotlib not available, skipping reward trend plotting")
+        except Exception as e:
+            print(f"Error creating reward trend plot: {e}")
 
 
     def save_training_data(self):
