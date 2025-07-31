@@ -31,6 +31,7 @@ public class SceneController : MonoBehaviour
     
     private IEnumerator SceneBit1()
     {
+        SwitchToCubeCamera();
         // Cube is shown in elevator, and it is very clear by the shaking that elevator is moving
         Debug.Log("Scene Bit 1: Starting");
         
@@ -46,7 +47,16 @@ public class SceneController : MonoBehaviour
     {
         // Elevator doors open (with a ding) and the cube slides out of the elevator
         Debug.Log("Scene Bit 2: Starting");
-        yield return new WaitForSeconds(2f);
+        
+        // Switch to elevator camera
+        SwitchToElevatorCamera();
+        
+        // Wait 1 second
+        yield return new WaitForSeconds(1f);
+        
+        // Open elevator doors
+        yield return StartCoroutine(OpenElevatorDoors());
+        
         Debug.Log("Scene Bit 2: Completed");
     }
 
@@ -98,5 +108,59 @@ public class SceneController : MonoBehaviour
         
         // Return elevator to original position
         Elevator.transform.position = originalPosition;
+    }
+    private void SwitchToCubeCamera()
+    {
+        Debug.Log("Switching to Cube Camera");
+        // Enable cube camera first, then disable others
+        CubeCamera.SetActive(true);
+        
+        // Disable all other cameras
+        ElevatorCamera.SetActive(false);
+        CubeSideCamera.SetActive(false);
+        CubeRevolveCamera.SetActive(false);
+    }
+
+    private void SwitchToElevatorCamera()
+    {
+        Debug.Log("Switching to Elevator Camera");
+        // Enable elevator camera first, then disable others
+        ElevatorCamera.SetActive(true);
+        
+        // Disable all other cameras
+        CubeCamera.SetActive(false);
+        CubeSideCamera.SetActive(false);
+        CubeRevolveCamera.SetActive(false);
+    }
+    
+    private IEnumerator OpenElevatorDoors()
+    {
+        Vector3 leftDoorOriginalPos = ElevatorL.transform.position;
+        Vector3 rightDoorOriginalPos = ElevatorR.transform.position;
+        
+        float doorOpenDistance = 2f; // How far the doors move apart
+        float doorOpenDuration = 1.5f; // How long the door opening takes
+        
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < doorOpenDuration)
+        {
+            float progress = elapsedTime / doorOpenDuration;
+            
+            // Move left door to the left
+            Vector3 leftDoorNewPos = leftDoorOriginalPos + Vector3.left * doorOpenDistance * progress;
+            ElevatorL.transform.position = leftDoorNewPos;
+            
+            // Move right door to the right
+            Vector3 rightDoorNewPos = rightDoorOriginalPos + Vector3.right * doorOpenDistance * progress;
+            ElevatorR.transform.position = rightDoorNewPos;
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Ensure doors are fully open
+        ElevatorL.transform.position = leftDoorOriginalPos + Vector3.left * doorOpenDistance;
+        ElevatorR.transform.position = rightDoorOriginalPos + Vector3.right * doorOpenDistance;
     }
 }
