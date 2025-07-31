@@ -129,6 +129,7 @@ public class SceneController : MonoBehaviour
         ElevatorCamera.SetActive(false);
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
+        InbetweenCamera.SetActive(false);
     }
 
     private void SwitchToElevatorCamera()
@@ -141,6 +142,7 @@ public class SceneController : MonoBehaviour
         CubeCamera.SetActive(false);
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
+        InbetweenCamera.SetActive(false);
     }
 
     private void SwitchToInbetweenCamera()
