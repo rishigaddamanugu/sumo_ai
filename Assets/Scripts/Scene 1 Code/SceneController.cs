@@ -35,7 +35,8 @@ public class SceneController : MonoBehaviour
         // Cube is shown in elevator, and it is very clear by the shaking that elevator is moving
         Debug.Log("Scene Bit 1: Starting");
         
-        // Start gentle elevator rumble and wait for it to complete
+        // Start both elevator rumble and agent floating concurrently
+        StartCoroutine(AgentFloatAndFall());
         yield return StartCoroutine(RumbleElevator());
         
         Debug.Log("Scene Bit 1: Completed");
@@ -51,7 +52,7 @@ public class SceneController : MonoBehaviour
         SwitchToElevatorCamera();
         
         // Wait 1 second
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         
         // Open elevator doors
         yield return StartCoroutine(OpenElevatorDoors());
@@ -86,7 +87,7 @@ public class SceneController : MonoBehaviour
     private IEnumerator RumbleElevator()
     {
         Vector3 originalPosition = Elevator.transform.position;
-        float rumbleDuration = 5f;
+        float rumbleDuration = 6f;
         float rumbleIntensity = 0.2f; // Gentle rumble intensity
         float rumbleSpeed = 20f; // How fast the rumble oscillates
         
@@ -137,7 +138,7 @@ public class SceneController : MonoBehaviour
         Vector3 leftDoorOriginalPos = ElevatorL.transform.position;
         Vector3 rightDoorOriginalPos = ElevatorR.transform.position;
         
-        float doorOpenDistance = 2f; // How far the doors move apart
+        float doorOpenDistance = 5f; // How far the doors move apart
         float doorOpenDuration = 1.5f; // How long the door opening takes
         
         float elapsedTime = 0f;
@@ -182,5 +183,43 @@ public class SceneController : MonoBehaviour
         // TODO: Implement platform rising with stadium rumble and camera shake
         // Placeholder: wait 2 seconds
         yield return new WaitForSeconds(2f);
+    }
+    
+    private IEnumerator AgentFloatAndFall()
+    {
+        // wait one second
+        yield return new WaitForSeconds(1f);
+
+        Vector3 originalPosition = Agent.transform.position;
+        float floatHeight = 5f; // How high the agent floats
+        float floatDuration = 2f; // How long to float up
+        float fallDuration = 2f; // How long to fall down
+        float totalDuration = 4f; // Total duration to match elevator rumble
+        
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < totalDuration)
+        {
+            float progress = elapsedTime / totalDuration;
+            
+            if (progress < 0.5f) // First half: float up
+            {
+                float floatProgress = progress * 2f; // 0 to 1 over first half
+                float currentHeight = Mathf.Sin(floatProgress * Mathf.PI * 0.5f) * floatHeight; // Smooth float up
+                Agent.transform.position = originalPosition + Vector3.up * currentHeight;
+            }
+            else // Second half: fall down
+            {
+                float fallProgress = (progress - 0.5f) * 2f; // 0 to 1 over second half
+                float currentHeight = Mathf.Cos(fallProgress * Mathf.PI * 0.5f) * floatHeight; // Smooth fall down
+                Agent.transform.position = originalPosition + Vector3.up * currentHeight;
+            }
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Ensure agent returns to original position
+        Agent.transform.position = originalPosition;
     }
 }
