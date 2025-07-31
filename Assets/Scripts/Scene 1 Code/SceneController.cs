@@ -38,6 +38,7 @@ public class SceneController : MonoBehaviour
         // Start both elevator rumble and agent floating concurrently
         StartCoroutine(AgentFloatAndFall());
         yield return StartCoroutine(RumbleElevator());
+        yield return new WaitForSeconds(1f);
         
         Debug.Log("Scene Bit 1: Completed");
     }
@@ -87,7 +88,7 @@ public class SceneController : MonoBehaviour
     private IEnumerator RumbleElevator()
     {
         Vector3 originalPosition = Elevator.transform.position;
-        float rumbleDuration = 6f;
+        float rumbleDuration = 5f;
         float rumbleIntensity = 0.2f; // Gentle rumble intensity
         float rumbleSpeed = 20f; // How fast the rumble oscillates
         
@@ -192,9 +193,9 @@ public class SceneController : MonoBehaviour
 
         Vector3 originalPosition = Agent.transform.position;
         float floatHeight = 5f; // How high the agent floats
-        float floatDuration = 2f; // How long to float up
-        float fallDuration = 2f; // How long to fall down
-        float totalDuration = 4f; // Total duration to match elevator rumble
+        float floatDuration = 2.5f; // How long to float up
+        float fallDuration = 2.5f; // How long to fall down
+        float totalDuration = 5f; // Total duration to match elevator rumble
         
         float elapsedTime = 0f;
         
@@ -202,24 +203,33 @@ public class SceneController : MonoBehaviour
         {
             float progress = elapsedTime / totalDuration;
             
-            if (progress < 0.5f) // First half: float up
+            if (progress < 0.4f) // First half: float up
             {
-                float floatProgress = progress * 2f; // 0 to 1 over first half
+                float floatProgress = progress * 2.5f; // 0 to 1 over first 40%
                 float currentHeight = Mathf.Sin(floatProgress * Mathf.PI * 0.5f) * floatHeight; // Smooth float up
                 Agent.transform.position = originalPosition + Vector3.up * currentHeight;
+            }
+            else if (progress < 0.5f) // Pause at top
+            {
+                // Stay at float height for 0.5 seconds
+                Agent.transform.position = originalPosition + Vector3.up * floatHeight;
             }
             else // Second half: fall down
             {
                 float fallProgress = (progress - 0.5f) * 2f; // 0 to 1 over second half
-                float currentHeight = Mathf.Cos(fallProgress * Mathf.PI * 0.5f) * floatHeight; // Smooth fall down
-                Agent.transform.position = originalPosition + Vector3.up * currentHeight;
+                float currentHeight = floatHeight - (fallProgress * (floatHeight - 1f)); // Fall from floatHeight to y=1
+                Vector3 newPos = originalPosition;
+                newPos.y = currentHeight;
+                Agent.transform.position = newPos;
+                
+                if (newPos.y <= 2f)
+                {
+                    break;
+                }
             }
             
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        
-        // Ensure agent returns to original position
-        Agent.transform.position = originalPosition;
     }
 }
