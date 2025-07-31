@@ -76,27 +76,30 @@ public class SceneController : MonoBehaviour
 
     private IEnumerator RumbleElevator()
     {
-        Vector3 originalPosition = Elevator.transform.position;
+        Rigidbody elevatorRb = Elevator.GetComponent<Rigidbody>();
+        if (elevatorRb == null)
+        {
+            Debug.LogWarning("Elevator needs a Rigidbody for rumble to work with physics!");
+            yield break;
+        }
+        
         float rumbleDuration = 8f;
-        float rumbleIntensity = 0.2f; // Gentle rumble intensity
-        float rumbleSpeed = 20f; // How fast the rumble oscillates
+        float rumbleIntensity = 0.2f;
+        float rumbleSpeed = 20f;
         
         float elapsedTime = 0f;
         
         while (elapsedTime < rumbleDuration)
         {
-            // Apply gentle random offset to elevator position
-            float xOffset = Mathf.Sin(Time.time * rumbleSpeed) * rumbleIntensity;
-            float yOffset = Mathf.Cos(Time.time * rumbleSpeed * 0.7f) * rumbleIntensity * 0.5f;
-            float zOffset = Mathf.Sin(Time.time * rumbleSpeed * 1.3f) * rumbleIntensity * 0.3f;
+            // Apply rumble as force instead of setting position
+            float xForce = Mathf.Sin(Time.time * rumbleSpeed) * rumbleIntensity;
+            float yForce = Mathf.Cos(Time.time * rumbleSpeed * 0.7f) * rumbleIntensity * 0.5f;
+            float zForce = Mathf.Sin(Time.time * rumbleSpeed * 1.3f) * rumbleIntensity * 0.3f;
             
-            Elevator.transform.position = originalPosition + new Vector3(xOffset, yOffset, zOffset);
+            elevatorRb.AddForce(new Vector3(xForce, yForce, zForce), ForceMode.Impulse);
             
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        
-        // Return elevator to original position
-        Elevator.transform.position = originalPosition;
     }
 }
