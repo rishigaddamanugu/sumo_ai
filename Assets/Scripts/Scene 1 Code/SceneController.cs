@@ -74,8 +74,12 @@ public class SceneController : MonoBehaviour
     {
         // Cube continues to slide while elevator doors close concurrently
         // Have both coroutines execute at the same time
-        yield return StartCoroutine(CubeSlideToSumoPlatform());
-        yield return StartCoroutine(CloseElevatorDoors());
+        Coroutine slideCoroutine = StartCoroutine(CubeSlideToSumoPlatform());
+        Coroutine closeDoorsCoroutine = StartCoroutine(CloseElevatorDoors());
+        
+        // Wait for both coroutines to complete
+        yield return slideCoroutine;
+        yield return closeDoorsCoroutine;
     }
 
     private IEnumerator SceneBit5()
@@ -283,13 +287,66 @@ public class SceneController : MonoBehaviour
 
     private IEnumerator CubeSlideToSumoPlatform()
     {
-        // TODO: Implement cube sliding to platform
-        // Placeholder: wait 2 seconds
         yield return new WaitForSeconds(2f);
+        Vector3 startPosition = Agent.transform.position;
+        float moveSpeed = 3f; // Units per second
+        
+        // Phase 1: Move -X (left)
+        float phase1Distance = 3f;
+        float phase1Duration = phase1Distance / moveSpeed;
+        float elapsedTime = 0f;
+        
+        Debug.Log("Phase 1: Moving left (-X)");
+        while (elapsedTime < phase1Duration)
+        {
+            float progress = elapsedTime / phase1Duration;
+            Vector3 newPosition = startPosition + Vector3.left * phase1Distance * progress;
+            Agent.transform.position = newPosition;
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Phase 2: Move -Z (forward)
+        Vector3 phase2StartPos = Agent.transform.position;
+        float phase2Distance = 8f;
+        float phase2Duration = phase2Distance / moveSpeed;
+        elapsedTime = 0f;
+        
+        Debug.Log("Phase 2: Moving forward (-Z)");
+        while (elapsedTime < phase2Duration)
+        {
+            float progress = elapsedTime / phase2Duration;
+            Vector3 newPosition = phase2StartPos + Vector3.back * phase2Distance * progress;
+            Agent.transform.position = newPosition;
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Phase 3: Move +X (right) to center of platform
+        Vector3 phase3StartPos = Agent.transform.position;
+        float phase3Distance = 3f;
+        float phase3Duration = phase3Distance / moveSpeed;
+        elapsedTime = 0f;
+        
+        Debug.Log("Phase 3: Moving right (+X) to platform center");
+        while (elapsedTime < phase3Duration)
+        {
+            float progress = elapsedTime / phase3Duration;
+            Vector3 newPosition = phase3StartPos + Vector3.right * phase3Distance * progress;
+            Agent.transform.position = newPosition;
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        Debug.Log("CubeSlideToSumoPlatform: Completed");
     }
     
     private IEnumerator CloseElevatorDoors()
     {
+        yield return new WaitForSeconds(1f);
         Vector3 leftDoorCurrentPos = ElevatorL.transform.position;
         Vector3 rightDoorCurrentPos = ElevatorR.transform.position;
         
