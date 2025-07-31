@@ -5,7 +5,7 @@ public class SceneController : MonoBehaviour
 {
     public GameObject Agent;
     public GameObject Elevator;
-    public GameObject Platform;
+    public GameObject SumoPlatform;
     public GameObject Stadium;
     public GameObject CubeCamera;
     public GameObject ElevatorCamera;
@@ -15,6 +15,7 @@ public class SceneController : MonoBehaviour
     public GameObject Scoreboard;
     public GameObject ElevatorL;
     public GameObject ElevatorR;
+    public GameObject TrapDoor;
     
     void Start()
     {
