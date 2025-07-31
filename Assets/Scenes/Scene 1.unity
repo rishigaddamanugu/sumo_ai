@@ -1089,7 +1089,7 @@ MonoBehaviour:
   Agent: {fileID: 2070645638}
   Elevator: {fileID: 1317437581}
   Platform: {fileID: 311935681}
-  Stadium: {fileID: 3660998464269629336}
+  Stadium: {fileID: 6220638031086237911}
   CubeCamera: {fileID: 151103484}
   ElevatorCamera: {fileID: 2011359943}
   CubeSideCamera: {fileID: 819914460}
@@ -1875,12 +1875,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3772460581855559976, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
   m_PrefabInstance: {fileID: 740476727}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3660998464269629336 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2740457630640900791, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
-  m_PrefabInstance: {fileID: 8096393400580977248}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &8096393400580977248
+--- !u!1001 &4420289702893070914
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1888,55 +1883,60 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 2740245760656031428, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
+      propertyPath: m_Name
+      value: ElevatorStadium
+      objectReference: {fileID: 0}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.853867
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalPosition.y
       value: 12.408649
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalPosition.z
       value: 6.1569185
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2145431687495801386, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+    - target: {fileID: 4952226173453198744, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2740457630640900791, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
-      propertyPath: m_Name
-      value: ElevatorStadium
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c6b94a245a4f549f2a302ce1c593c915, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
+--- !u!1 &6220638031086237911 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2740245760656031428, guid: c1bc334216f8f4de489c6a4ea8107815, type: 3}
+  m_PrefabInstance: {fileID: 4420289702893070914}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1946,7 +1946,7 @@ SceneRoots:
   - {fileID: 1357072798}
   - {fileID: 266284084}
   - {fileID: 1288392267}
-  - {fileID: 8096393400580977248}
+  - {fileID: 4420289702893070914}
   - {fileID: 2011359947}
   - {fileID: 819914464}
   - {fileID: 1872296566}
