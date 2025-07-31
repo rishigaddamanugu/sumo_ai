@@ -35,10 +35,9 @@ public class SceneController : MonoBehaviour
         // Cube is shown in elevator, and it is very clear by the shaking that elevator is moving
         Debug.Log("Scene Bit 1: Starting");
         
-        // Start gentle elevator rumble
-        StartCoroutine(RumbleElevator());
+        // Start gentle elevator rumble and wait for it to complete
+        yield return StartCoroutine(RumbleElevator());
         
-        yield return new WaitForSeconds(2f);
         Debug.Log("Scene Bit 1: Completed");
     }
 
@@ -64,7 +63,7 @@ public class SceneController : MonoBehaviour
     {
         // Cube slides over to the platform, and hops on
         Debug.Log("Scene Bit 3: Starting");
-        yield return new WaitForSeconds(2f);
+        yield return StartCoroutine(CubeSlideToPlatform());
         Debug.Log("Scene Bit 3: Completed");
     }
     
@@ -72,7 +71,7 @@ public class SceneController : MonoBehaviour
     {
         // Stadium and camera rumble, and scoreboard goes up
         Debug.Log("Scene Bit 4: Starting");
-        yield return new WaitForSeconds(2f);
+        yield return StartCoroutine(StadiumRumbleAndScoreboard());
         Debug.Log("Scene Bit 4: Completed");
     }
 
@@ -80,7 +79,7 @@ public class SceneController : MonoBehaviour
     {
         // Stadium rumbles, camera shakes, and platform rises
         Debug.Log("Scene Bit 5: Starting");
-        yield return new WaitForSeconds(2f);
+        yield return StartCoroutine(PlatformRiseSequence());
         Debug.Log("Scene Bit 5: Completed");
     }
 
@@ -162,5 +161,26 @@ public class SceneController : MonoBehaviour
         // Ensure doors are fully open
         ElevatorL.transform.position = leftDoorOriginalPos + Vector3.left * doorOpenDistance;
         ElevatorR.transform.position = rightDoorOriginalPos + Vector3.right * doorOpenDistance;
+    }
+    
+    private IEnumerator CubeSlideToPlatform()
+    {
+        // TODO: Implement cube sliding to platform and hopping on
+        // Placeholder: wait 2 seconds
+        yield return new WaitForSeconds(2f);
+    }
+    
+    private IEnumerator StadiumRumbleAndScoreboard()
+    {
+        // TODO: Implement stadium rumble and scoreboard rising
+        // Placeholder: wait 2 seconds
+        yield return new WaitForSeconds(2f);
+    }
+    
+    private IEnumerator PlatformRiseSequence()
+    {
+        // TODO: Implement platform rising with stadium rumble and camera shake
+        // Placeholder: wait 2 seconds
+        yield return new WaitForSeconds(2f);
     }
 }
