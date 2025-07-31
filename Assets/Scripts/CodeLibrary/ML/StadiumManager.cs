@@ -25,7 +25,8 @@ public class StadiumManager : MonoBehaviour
     private int tedScore = 0;
     private int bobScore = 0;
     private int round = 0;
-    private int timer = 30;
+    private float timer = 30f;
+    private float timeRemaining = 30f;
     private float timeElapsed = 0f;
 
     void Start()
@@ -45,7 +46,7 @@ public class StadiumManager : MonoBehaviour
         
         // Initialize scoreboard
         UpdateScoreboard();
-        UpdateTimerText(timer);
+        UpdateTimerText((int)timer);
     }
     
     void Update()
@@ -54,14 +55,15 @@ public class StadiumManager : MonoBehaviour
         timeElapsed += Time.deltaTime;
         
         // Countdown timer
-        if (timer > 0)
+        if (timeRemaining > 0)
         {
-            timer -= (int)Time.deltaTime;
-            if (timer <= 0) resetStadium();
+            timeRemaining -= Time.deltaTime;
+            timer = Mathf.CeilToInt(timeRemaining); // Round up to show whole seconds
+            if (timeRemaining <= 0) resetStadium();
         }
         
         // Update timer display every frame
-        UpdateTimerText(timer);
+        UpdateTimerText((int)timer);
         
         // Update time elapsed display
         UpdateTimeElapsedText(timeElapsed);
@@ -147,15 +149,18 @@ public class StadiumManager : MonoBehaviour
 
     public void resetTimer()
     {
-        timer = 30;
-        UpdateTimerText(timer);
+        timer = 30f;
+        timeRemaining = 30f;
+        UpdateTimerText((int)timer);
     }
     
     public void UpdateTimeElapsedText(float timeElapsed)
     {
         if (timeElapsedText != null)
         {
-            timeElapsedText.text = "Elapsed Time: " + timeElapsed.ToString("F1") + "s";
+            int minutes = Mathf.FloorToInt(timeElapsed / 60f);
+            int seconds = Mathf.FloorToInt(timeElapsed % 60f);
+            timeElapsedText.text = "Elapsed Time: " + minutes.ToString("D2") + ":" + seconds.ToString("D2");
         }
     }
     
