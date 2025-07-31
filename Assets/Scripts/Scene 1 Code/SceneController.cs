@@ -59,21 +59,14 @@ public class SceneController : MonoBehaviour
         
         // Open elevator doors
         yield return StartCoroutine(OpenElevatorDoors());
+        yield return StartCoroutine(CubeSlideToStadium());
         
         Debug.Log("Scene Bit 2: Completed");
     }
 
     private IEnumerator SceneBit3()
     {
-        // Cube slides over to the platform, and hops on
-        Debug.Log("Scene Bit 3: Starting");
-        yield return StartCoroutine(CubeSlideToStadium());
-        Debug.Log("Scene Bit 3: Completed");
-    }
-    
-    private IEnumerator SceneBit4()
-    {
-        // Cube continues to slide while elevator doors close concurrently
+        // Cube continues to slide to platform while elevator doors close concurrently
         // Have both coroutines execute at the same time
         Coroutine slideCoroutine = StartCoroutine(CubeSlideToSumoPlatform());
         Coroutine closeDoorsCoroutine = StartCoroutine(CloseElevatorDoors());
@@ -82,6 +75,15 @@ public class SceneController : MonoBehaviour
         yield return slideCoroutine;
         yield return closeDoorsCoroutine;
     }
+
+     private IEnumerator SceneBit4()
+    {
+        // Cube hops on platform
+        Debug.Log("Scene Bit 3: Starting");
+        yield return StartCoroutine(CubeHopOnSumoPlatform());
+        Debug.Log("Scene Bit 3: Completed");
+    }
+    
 
     private IEnumerator SceneBit5()
     {
@@ -160,7 +162,25 @@ public class SceneController : MonoBehaviour
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
     }
-    
+    private IEnumerator CubeHopOnSumoPlatform()
+    {
+        // hop the cube onto the sumo platform
+        // it basically just needs to move forward to the platform and then stop
+        Vector3 startPosition = Agent.transform.position;
+        float hopDistance = 10f; // How far to hop in -Z direction
+        float hopDuration = 2f; // How long to hop
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < hopDuration)
+        {
+            float progress = elapsedTime / hopDuration;
+            Vector3 newPosition = startPosition + Vector3.forward * hopDistance * progress;
+            Agent.transform.position = newPosition;
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
     private IEnumerator OpenElevatorDoors()
     {
         Vector3 leftDoorOriginalPos = ElevatorL.transform.position;
