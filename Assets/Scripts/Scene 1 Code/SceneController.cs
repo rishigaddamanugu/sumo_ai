@@ -310,7 +310,7 @@ public class SceneController : MonoBehaviour
         
         // Phase 2: Move -Z (forward)
         Vector3 phase2StartPos = Agent.transform.position;
-        float phase2Distance = Platform.transform.position.z - Agent.transform.position.z;
+        float phase2Distance = SumoPlatform.transform.position.z - Agent.transform.position.z;
         float phase2Duration = Mathf.Abs(phase2Distance) / moveSpeed;
         elapsedTime = 0f;
         
