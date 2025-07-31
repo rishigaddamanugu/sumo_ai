@@ -11,6 +11,7 @@ public class SceneController : MonoBehaviour
     public GameObject ElevatorCamera;
     public GameObject CubeSideCamera;
     public GameObject CubeRevolveCamera;
+    public GameObject InbetweenCamera;
     public GameObject Scoreboard;
     public GameObject ElevatorL;
     public GameObject ElevatorR;
@@ -22,7 +23,7 @@ public class SceneController : MonoBehaviour
     
     private IEnumerator ExecuteSceneBits()
     {
-        yield return StartCoroutine(SceneBit1());
+        // yield return StartCoroutine(SceneBit1());
         yield return StartCoroutine(SceneBit2());
         yield return StartCoroutine(SceneBit3());
         yield return StartCoroutine(SceneBit4());
@@ -65,11 +66,19 @@ public class SceneController : MonoBehaviour
     {
         // Cube slides over to the platform, and hops on
         Debug.Log("Scene Bit 3: Starting");
-        yield return StartCoroutine(CubeSlideToPlatform());
+        yield return StartCoroutine(CubeSlideToStadium());
         Debug.Log("Scene Bit 3: Completed");
     }
     
     private IEnumerator SceneBit4()
+    {
+        // Cube continues to slide while elevator doors close concurrently
+        // Have both coroutines execute at the same time
+        yield return StartCoroutine(CubeSlideToSumoPlatform());
+        yield return StartCoroutine(CloseElevatorDoors());
+    }
+
+    private IEnumerator SceneBit5()
     {
         // Stadium and camera rumble, and scoreboard goes up
         Debug.Log("Scene Bit 4: Starting");
@@ -77,7 +86,7 @@ public class SceneController : MonoBehaviour
         Debug.Log("Scene Bit 4: Completed");
     }
 
-    private IEnumerator SceneBit5()
+    private IEnumerator SceneBit6()
     {
         // Stadium rumbles, camera shakes, and platform rises
         Debug.Log("Scene Bit 5: Starting");
@@ -133,6 +142,17 @@ public class SceneController : MonoBehaviour
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
     }
+
+    private void SwitchToInbetweenCamera()
+    {
+        Debug.Log("Switching to Inbetween Camera");
+        // Enable inbetween camera first, then disable others
+        InbetweenCamera.SetActive(true);
+        ElevatorCamera.SetActive(false);
+        CubeCamera.SetActive(false);
+        CubeSideCamera.SetActive(false);
+        CubeRevolveCamera.SetActive(false);
+    }
     
     private IEnumerator OpenElevatorDoors()
     {
@@ -165,7 +185,7 @@ public class SceneController : MonoBehaviour
         ElevatorR.transform.position = rightDoorOriginalPos + Vector3.right * doorOpenDistance;
     }
     
-    private IEnumerator CubeSlideToPlatform()
+    private IEnumerator CubeSlideToStadium()
     {
         // TODO: Implement cube sliding to platform and hopping on
         // Placeholder: wait 2 seconds
@@ -253,6 +273,48 @@ public class SceneController : MonoBehaviour
                     break;
                 }
             }
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator CubeSlideToSumoPlatform()
+    {
+        // TODO: Implement cube sliding to platform
+        // Placeholder: wait 2 seconds
+        yield return new WaitForSeconds(2f);
+    }
+    
+    private IEnumerator CloseElevatorDoors()
+    {
+        Vector3 leftDoorCurrentPos = ElevatorL.transform.position;
+        Vector3 rightDoorCurrentPos = ElevatorR.transform.position;
+        
+        // Calculate the original positions (doors are currently open)
+        Vector3 leftDoorOriginalPos = leftDoorCurrentPos + Vector3.right * 5f; // Move right to close
+        Vector3 rightDoorOriginalPos = rightDoorCurrentPos + Vector3.left * 5f; // Move left to close
+        
+        float doorCloseDistance = 5f; // How far the doors move to close
+        float doorCloseDuration = 1.5f; // How long the door closing takes
+        
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < doorCloseDuration)
+        {
+            float progress = elapsedTime / doorCloseDuration;
+            
+            // Move left door to the right (towards center)
+            Vector3 leftDoorNewPos = leftDoorCurrentPos + Vector3.right * doorCloseDistance * progress;
+            ElevatorL.transform.position = leftDoorNewPos;
+            
+            if (elapsedTime >= 0.5f && elapsedTime < 0.6f) 
+            {
+                SwitchToInbetweenCamera();
+            }
+            // Move right door to the left (towards center)
+            Vector3 rightDoorNewPos = rightDoorCurrentPos + Vector3.left * doorCloseDistance * progress;
+            ElevatorR.transform.position = rightDoorNewPos;
             
             elapsedTime += Time.deltaTime;
             yield return null;

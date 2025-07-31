@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 63138
+  controlID: 64324
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -95,7 +95,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 0
+    m_EnableMouseInput: 1
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 63139
+  controlID: 64325
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 63140
+  controlID: 64326
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -843,7 +843,7 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: -0.19438104, y: -0.6570165, z: 0.18099071, w: -0.7056148}
     speed: 2
-    m_Value: {x: -0.1943709, y: -0.6569822, z: 0.18098126, w: -0.70557797}
+    m_Value: {x: 0.19438104, y: 0.6570165, z: -0.18099071, w: 0.7056148}
   m_Size:
     m_Target: 5.5636883
     speed: 2
