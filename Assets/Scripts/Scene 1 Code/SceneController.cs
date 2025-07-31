@@ -169,7 +169,33 @@ public class SceneController : MonoBehaviour
     {
         // TODO: Implement cube sliding to platform and hopping on
         // Placeholder: wait 2 seconds
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
+        // slide the cube to platform with constant speed
+        // It basically just needs to move forward to the platform and then stop
+        
+        Vector3 startPosition = Agent.transform.position;
+        float slideDistance = 10f; // How far to slide in -Z direction
+        float slideDuration = 2f; // Slower slide
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < slideDuration)
+        {
+            float progress = elapsedTime / slideDuration;
+            Vector3 newPosition = startPosition + Vector3.back * slideDistance * progress;
+            Agent.transform.position = newPosition;
+            
+            // Switch to cube camera after 0.5 seconds
+            if (elapsedTime >= 0.5f && elapsedTime < 0.6f)
+            {
+                SwitchToCubeCamera();
+            }
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Ensure final position
+        Agent.transform.position = startPosition + Vector3.back * slideDistance;
     }
     
     private IEnumerator StadiumRumbleAndScoreboard()
