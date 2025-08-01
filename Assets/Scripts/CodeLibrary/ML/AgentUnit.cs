@@ -10,7 +10,8 @@ public class AgentUnit : MonoBehaviour
     private Rigidbody rb;
     
     
-    [SerializeField] private float moveForce = 0.0000000001f;
+    [SerializeField] private float moveForce = 0.1f;
+    [SerializeField] private float turnForce = 0.001f;
     [SerializeField] private float moveDuration = 0f;
     
     [Header("Death Detection")]
@@ -24,7 +25,8 @@ public class AgentUnit : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         // rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        
+        rb.linearDamping = 0.01f;
+        rb.angularDamping = 0.01f;
         FindObjectOfType<AgentManager>().RegisterAgent(this);
     }
     
@@ -40,8 +42,6 @@ public class AgentUnit : MonoBehaviour
         RaycastHit hit;
         bool isGrounded = Physics.Raycast(raycastOrigin, Vector3.down, out hit, groundCheckDistance);
         
-        // Optional: Visualize the ray in the scene view for debugging
-        Debug.DrawRay(raycastOrigin, Vector3.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
         return isGrounded;
     }
     
@@ -112,10 +112,10 @@ public class AgentUnit : MonoBehaviour
                     rb.AddForce(Vector3.back * moveForce, ForceMode.Impulse);
                     break;
                 case "turnleft":
-                    rb.AddTorque(Vector3.up * -moveForce, ForceMode.Impulse);
+                    rb.AddTorque(Vector3.up * -turnForce, ForceMode.Impulse);
                     break;
                 case "turnright":
-                    rb.AddTorque(Vector3.up * moveForce, ForceMode.Impulse);
+                    rb.AddTorque(Vector3.up * turnForce, ForceMode.Impulse);
                     break;
             }
         }
