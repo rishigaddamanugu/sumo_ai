@@ -25,11 +25,13 @@ public class SceneController : MonoBehaviour
     
     private IEnumerator ExecuteSceneBits()
     {
-        yield return StartCoroutine(SceneBit1());
+        // yield return StartCoroutine(SceneBit1());
         yield return StartCoroutine(SceneBit2());
         yield return StartCoroutine(SceneBit3());
         yield return StartCoroutine(SceneBit4());
         yield return StartCoroutine(SceneBit5());
+        yield return StartCoroutine(SceneBit6());
+        yield return StartCoroutine(SceneBit7());
     }
     
     private IEnumerator SceneBit1()
@@ -91,18 +93,26 @@ public class SceneController : MonoBehaviour
 
     private IEnumerator SceneBit5()
     {
-        // Stadium and camera rumble, and scoreboard goes up
-        Debug.Log("Scene Bit 4: Starting");
-        yield return StartCoroutine(StadiumRumbleAndScoreboard());
-        Debug.Log("Scene Bit 4: Completed");
-    }
-
-    private IEnumerator SceneBit6()
-    {
         // Stadium rumbles, camera shakes, and platform rises
         Debug.Log("Scene Bit 5: Starting");
         yield return StartCoroutine(PlatformRiseSequence());
         Debug.Log("Scene Bit 5: Completed");
+    }
+
+    private IEnumerator SceneBit6()
+    {
+        // Open trap door
+        Debug.Log("Scene Bit 6: Starting");
+        yield return StartCoroutine(OpenTrapDoor());
+        Debug.Log("Scene Bit 6: Completed");
+    }
+
+    private IEnumerator SceneBit7()
+    {
+        // Stadium and camera rumble, and scoreboard goes up
+        Debug.Log("Scene Bit 4: Starting");
+        yield return StartCoroutine(StadiumRumbleAndScoreboard());
+        Debug.Log("Scene Bit 4: Completed");
     }
 
     private IEnumerator RumbleElevator()
@@ -301,14 +311,65 @@ public class SceneController : MonoBehaviour
         // TODO: Implement stadium rumble and scoreboard rising
         // Placeholder: wait 2 seconds
         yield return new WaitForSeconds(2f);
+
+        float targetY = 6f;
+        float duration = 3f;
+        Vector3 position = Scoreboard.transform.position;
+        float startY = position.y;
+        float distance = targetY - startY;
+        float speed = distance / duration;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            float moveThisFrame = speed * Time.deltaTime;
+            position.y += moveThisFrame;
+            Scoreboard.transform.position = position;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Stop exactly at target to avoid overshoot
+        position.y = targetY;
+        Scoreboard.transform.position = position;
     }
     
     private IEnumerator PlatformRiseSequence()
     {
-        // TODO: Implement platform rising with stadium rumble and camera shake
-        // Placeholder: wait 2 seconds
+        SwitchToPlatformCamera();
+
+        // Parenting so the agent moves with the platform
+        Agent.transform.SetParent(SumoPlatform.transform);
+
         yield return new WaitForSeconds(2f);
+
+        float targetY = 10f;
+        float duration = 4f;
+        Vector3 position = SumoPlatform.transform.position;
+        float startY = position.y;
+        float distance = targetY - startY;
+        float speed = distance / duration;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            float moveThisFrame = speed * Time.deltaTime;
+            position.y += moveThisFrame;
+            SumoPlatform.transform.position = position;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Stop exactly at target to avoid overshoot
+        position.y = targetY;
+        SumoPlatform.transform.position = position;
+        Agent.transform.SetParent(null);
     }
+
     
     private IEnumerator AgentFloatAndFall()
     {
@@ -489,5 +550,33 @@ public class SceneController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+    }
+
+    private IEnumerator OpenTrapDoor()
+    {
+        yield return new WaitForSeconds(1f);
+        
+        float targetZ = TrapDoor.transform.position.z + 2f; // Move 3 units in Z direction
+        float duration = 2f;
+        Vector3 position = TrapDoor.transform.position;
+        float startZ = position.z;
+        float distance = targetZ - startZ;
+        float speed = distance / duration;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            float moveThisFrame = speed * Time.deltaTime;
+            position.z += moveThisFrame;
+            TrapDoor.transform.position = position;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Stop exactly at target to avoid overshoot
+        position.z = targetZ;
+        TrapDoor.transform.position = position;
     }
 }
