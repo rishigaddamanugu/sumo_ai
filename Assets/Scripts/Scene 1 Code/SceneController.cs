@@ -12,6 +12,7 @@ public class SceneController : MonoBehaviour
     public GameObject CubeSideCamera;
     public GameObject CubeRevolveCamera;
     public GameObject InbetweenCamera;
+    public GameObject PlatformCamera;
     public GameObject Scoreboard;
     public GameObject ElevatorL;
     public GameObject ElevatorR;
@@ -34,6 +35,7 @@ public class SceneController : MonoBehaviour
     private IEnumerator SceneBit1()
     {
         SwitchToCubeCamera();
+        yield return new WaitForSeconds(1f);
         // Cube is shown in elevator, and it is very clear by the shaking that elevator is moving
         Debug.Log("Scene Bit 1: Starting");
         
@@ -78,8 +80,10 @@ public class SceneController : MonoBehaviour
 
      private IEnumerator SceneBit4()
     {
+        SwitchToPlatformCamera();
         // Cube hops on platform
         Debug.Log("Scene Bit 4: Starting");
+        SwitchToPlatformCamera();
         yield return StartCoroutine(CubeHopOnSumoPlatform());
         Debug.Log("Scene Bit 4: Completed");
     }
@@ -137,6 +141,18 @@ public class SceneController : MonoBehaviour
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
         InbetweenCamera.SetActive(false);
+        PlatformCamera.SetActive(false);
+    }
+
+    private void SwitchToPlatformCamera()
+    {
+        Debug.Log("Switching to Platform Camera");
+        PlatformCamera.SetActive(true);
+        CubeCamera.SetActive(false);
+        ElevatorCamera.SetActive(false);
+        CubeSideCamera.SetActive(false);
+        CubeRevolveCamera.SetActive(false);
+        InbetweenCamera.SetActive(false);
     }
 
     private void SwitchToElevatorCamera()
@@ -150,6 +166,7 @@ public class SceneController : MonoBehaviour
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
         InbetweenCamera.SetActive(false);
+        PlatformCamera.SetActive(false);
     }
 
     private void SwitchToInbetweenCamera()
@@ -161,10 +178,40 @@ public class SceneController : MonoBehaviour
         CubeCamera.SetActive(false);
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
+        PlatformCamera.SetActive(false);
     }
     private IEnumerator CubeHopOnSumoPlatform()
     {
         yield return new WaitForSeconds(1f);
+        
+        // Get the Rigidbody component from the Agent
+        Rigidbody agentRigidbody = Agent.GetComponent<Rigidbody>();
+        if (agentRigidbody == null)
+        {
+            Debug.LogError("Agent does not have a Rigidbody component!");
+            yield break;
+        }
+        
+        // Calculate the jump parameters
+        Vector3 jumpDirection = Agent.transform.forward; // Jump in the forward direction
+        float jumpForce = 8f; // Upward force
+        float forwardForce = 6f; // Forward force for the arc
+        
+        // Apply the jump force (upward + forward)
+        Vector3 jumpVector = Vector3.up * jumpForce + jumpDirection * forwardForce;
+        agentRigidbody.AddForce(jumpVector, ForceMode.Impulse);
+        
+        // Wait for the jump to complete (physics will handle the arc)
+        float jumpDuration = 3f; // Adjust based on the jump height and distance
+        yield return new WaitForSeconds(jumpDuration);
+        
+        // Optional: Add a small downward force to ensure landing
+        agentRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
+        
+        // Wait a bit more for the landing to settle
+        yield return new WaitForSeconds(1f);
+        
+        Debug.Log("CubeHopOnSumoPlatform: Completed");
     }
     private IEnumerator OpenElevatorDoors()
     {
@@ -369,12 +416,11 @@ public class SceneController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        
         // Rotate 90 degrees counter-clockwise before Phase 2
         rotateDuration = 1f;
         elapsedTime = 0f;
         
-        Debug.Log("Rotating 90 degrees counter-clockwise before Phase 3");
+        Debug.Log("Rotating 90 degrees counter-clockwise before big jump.");
         startRotation = Agent.transform.rotation;
         endRotation = startRotation * Quaternion.Euler(0f, -90f, 0f);
         
