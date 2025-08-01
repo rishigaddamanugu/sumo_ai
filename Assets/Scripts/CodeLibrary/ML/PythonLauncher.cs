@@ -23,7 +23,7 @@ public class PythonLauncher : MonoBehaviour
         yield return WaitForAPIReady("http://127.0.0.1:5000/ping");
 
         Time.timeScale = 1f; // Unpause game
-        SceneManager.LoadScene("TestScene"); // Replace with your actual game scene name
+        SceneManager.LoadScene("Scene 1"); // Replace with your actual game scene name
     }
 
     IEnumerator RunPortCleanup()

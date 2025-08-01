@@ -17,7 +17,7 @@ public class AgentUnit : MonoBehaviour
     private float acceleration = 3f;
     private float directionChangeSpeed = 5f;
     
-    [SerializeField] private float moveForce = 40f;
+    [SerializeField] private float moveForce = 5f;
     [SerializeField] private float moveDuration = 0f;
     
     [Header("Death Detection")]
@@ -26,11 +26,7 @@ public class AgentUnit : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        
-        // Physics settings inspired by AgentController
-        rb.linearDamping = 0f; // No linear drag
-        rb.angularDamping = 0f; // No angular drag
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        // rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         
         FindObjectOfType<AgentManager>().RegisterAgent(this);
     }
@@ -41,12 +37,6 @@ public class AgentUnit : MonoBehaviour
     public void SetDeathState(bool state)
     {
         isDead = state;
-    }
-
-    void Update()
-    {
-        // Apply continuous movement based on current action (inspired by AgentController)
-        ApplyContinuousMovement();
     }
 
     public bool IsBusy() => isMoving;
@@ -75,18 +65,12 @@ public class AgentUnit : MonoBehaviour
         if (!hasAction) return;
 
         isMoving = true;
-        Vector3 direction = DirectionToVector(pendingAction);
-        
-        // Use continuous movement system for bigger strides
-        SetMovementTarget(direction, 8f); // Reduced speed for more controlled movement
-        
-        // Set a timer to stop the movement
-        StartCoroutine(StopMovementAfterDelay());
+        StartCoroutine(MoveWithImpulse(pendingAction));
         
         hasAction = false;
         pendingAction = null;
 
-                // Check for death and reset immediately after API call
+        // Check for death and reset immediately after API call
         if (ground != null)
         {
             float groundY = ground.transform.position.y;
@@ -100,79 +84,27 @@ public class AgentUnit : MonoBehaviour
         }
     }
 
-    private IEnumerator StopMovementAfterDelay()
+    private IEnumerator MoveWithImpulse(string action)
     {
-        // Wait for the movement duration
-        yield return new WaitForSeconds(0.2f); // Adjust this for stride length
-        
-        // Stop the movement
-        SetMovementTarget(Vector3.zero, 0f);
-        isMoving = false;
-    }
-
-    private IEnumerator MoveWithImpulse(Vector3 direction)
-    {
-        // Apply a single impulse to start the movement
-        rb.AddForce(direction * moveForce, ForceMode.Impulse);
+        switch (action)
+        {
+            case "forward":
+                rb.AddForce(Vector3.forward * moveForce, ForceMode.Impulse);
+                break;
+            case "backward":
+                rb.AddForce(Vector3.back * moveForce, ForceMode.Impulse);
+                break;
+            case "turnLeft":
+                rb.AddTorque(Vector3.up * -moveForce, ForceMode.Impulse);
+                break;
+            case "turnRight":
+                rb.AddTorque(Vector3.up * moveForce, ForceMode.Impulse);
+                break;
+        }
         
         // Wait for the movement duration
         yield return new WaitForSeconds(moveDuration);
         
         isMoving = false;
-    }
-
-    // Continuous movement system inspired by AgentController
-    private void ApplyContinuousMovement()
-    {
-        // Gradually adjust current speed towards target speed (like car acceleration/braking)
-        if (currentSpeed < targetSpeed)
-        {
-            currentSpeed = Mathf.Min(currentSpeed + acceleration * Time.deltaTime, targetSpeed);
-        }
-        else if (currentSpeed > targetSpeed)
-        {
-            currentSpeed = Mathf.Max(currentSpeed - acceleration * Time.deltaTime, targetSpeed);
-        }
-        
-        // Gradually adjust current direction towards target direction
-        if (Vector3.Distance(currentDirection, targetDirection) > 0.1f)
-        {
-            currentDirection = Vector3.Lerp(currentDirection, targetDirection, directionChangeSpeed * Time.deltaTime);
-            currentDirection.Normalize();
-        }
-        else
-        {
-            currentDirection = targetDirection;
-        }
-        
-        // Apply the current speed in the current direction while preserving Y velocity for gravity
-        Vector3 targetVelocity = currentDirection * currentSpeed;
-        rb.linearVelocity = new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
-    }
-
-    // Enhanced movement method that sets target direction and speed
-    private void SetMovementTarget(Vector3 direction, float speed)
-    {
-        if (direction.magnitude > 0.1f)
-        {
-            targetDirection = direction.normalized;
-            targetSpeed = speed;
-        }
-        else
-        {
-            targetSpeed = 0f; // Stop if no movement
-        }
-    }
-
-    private Vector3 DirectionToVector(string dir)
-    {
-        return dir switch
-        {
-            "up" => Vector3.forward,
-            "down" => Vector3.back,
-            "left" => Vector3.left,
-            "right" => Vector3.right,
-            _ => Vector3.zero
-        };
     }
 }
