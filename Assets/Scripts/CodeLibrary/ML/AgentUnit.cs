@@ -9,15 +9,8 @@ public class AgentUnit : MonoBehaviour
     private bool hasAction = false;
     private Rigidbody rb;
     
-    // Physics-based movement variables (inspired by AgentController)
-    private float currentSpeed = 0f;
-    private float targetSpeed = 0f;
-    private Vector3 currentDirection = Vector3.zero;
-    private Vector3 targetDirection = Vector3.zero;
-    private float acceleration = 3f;
-    private float directionChangeSpeed = 5f;
     
-    [SerializeField] private float moveForce = 0.5f;
+    [SerializeField] private float moveForce = 0.0000000001f;
     [SerializeField] private float moveDuration = 0f;
     
     [Header("Death Detection")]
@@ -40,16 +33,16 @@ public class AgentUnit : MonoBehaviour
         CheckGrounded();
     }
     
-    private void CheckGrounded()
+    private bool CheckGrounded()
     {
         // Cast a ray downward from the bottom of the cube
         Vector3 raycastOrigin = transform.position - new Vector3(0, GetComponent<Collider>().bounds.extents.y, 0);
         RaycastHit hit;
-        isGrounded = Physics.Raycast(raycastOrigin, Vector3.down, out hit, groundCheckDistance);
-        return isGrounded;
+        bool isGrounded = Physics.Raycast(raycastOrigin, Vector3.down, out hit, groundCheckDistance);
         
         // Optional: Visualize the ray in the scene view for debugging
         Debug.DrawRay(raycastOrigin, Vector3.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
+        return isGrounded;
     }
     
 
