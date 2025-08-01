@@ -197,34 +197,35 @@ public class SceneController : MonoBehaviour
         float jumpForce = 8f; // Upward force
         float forwardForce = 6f; // Forward force for the arc
         
-        // Apply the jump force (upward + forward)
+                // Apply the jump force (upward + forward)
         Vector3 jumpVector = Vector3.up * jumpForce + jumpDirection * forwardForce;
         agentRigidbody.AddForce(jumpVector, ForceMode.Impulse);
         
-        // Wait for the jump to complete (physics will handle the arc)
-        float jumpDuration = 3f; // Adjust based on the jump height and distance
-        yield return new WaitForSeconds(jumpDuration);
-        
-        // Optional: Add a small downward force to ensure landing
-        agentRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
-
-        // Phase 1: Rotate 90 degrees clockwise
-        float rotateDuration = 1f;
+        // Jump and rotate simultaneously
+        float jumpDuration = 3f; // Total jump duration
+        float rotateDuration = 2f; // Rotation duration (slightly shorter than jump)
         float elapsedTime = 0f;
         
-        Debug.Log("Phase 1: Rotating 90 degrees clockwise");
+        Debug.Log("Jumping and rotating simultaneously");
         Quaternion startRotation = Agent.transform.rotation;
         Quaternion endRotation = startRotation * Quaternion.Euler(0f, 90f, 0f);
         
-        // Rotate first
-        while (elapsedTime < rotateDuration)
+        // Perform jump and rotation at the same time
+        while (elapsedTime < jumpDuration)
         {
-            float progress = elapsedTime / rotateDuration;
-            Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, progress);
+            // Handle rotation (only during the first part of the jump)
+            if (elapsedTime < rotateDuration)
+            {
+                float rotationProgress = elapsedTime / rotateDuration;
+                Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, rotationProgress);
+            }
             
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+        
+        // Optional: Add a small downward force to ensure landing
+        agentRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
         
         // Wait a bit more for the landing to settle
         yield return new WaitForSeconds(1f);
