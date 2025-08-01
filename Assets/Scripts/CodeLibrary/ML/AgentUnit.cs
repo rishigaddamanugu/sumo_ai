@@ -17,11 +17,16 @@ public class AgentUnit : MonoBehaviour
     private float acceleration = 3f;
     private float directionChangeSpeed = 5f;
     
-    [SerializeField] private float moveForce = 5f;
+    [SerializeField] private float moveForce = 0.5f;
     [SerializeField] private float moveDuration = 0f;
     
     [Header("Death Detection")]
     public GameObject ground;
+    
+    [Header("Ground Detection")]
+    [SerializeField] private float groundCheckDistance = 0.1f;
+    
+    private bool isGrounded = false;
     
     void Start()
     {
@@ -29,6 +34,32 @@ public class AgentUnit : MonoBehaviour
         // rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         
         FindObjectOfType<AgentManager>().RegisterAgent(this);
+    }
+    
+    void Update()
+    {
+        CheckGrounded();
+    }
+    
+    private void CheckGrounded()
+    {
+        // Cast a ray downward from the bottom of the cube
+        Vector3 raycastOrigin = transform.position - new Vector3(0, GetComponent<Collider>().bounds.extents.y, 0);
+        RaycastHit hit;
+        isGrounded = Physics.Raycast(raycastOrigin, Vector3.down, out hit, groundCheckDistance);
+        
+        // Debug information
+        if (isGrounded)
+        {
+            Debug.Log($"Grounded! Hit: {hit.collider.name} at distance {hit.distance}");
+        }
+        else
+        {
+            Debug.Log($"Not grounded! Raycast from {raycastOrigin} down {groundCheckDistance} units.");
+        }
+        
+        // Optional: Visualize the ray in the scene view for debugging
+        Debug.DrawRay(raycastOrigin, Vector3.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
     }
     
 
@@ -86,20 +117,29 @@ public class AgentUnit : MonoBehaviour
 
     private IEnumerator MoveWithImpulse(string action)
     {
-        switch (action)
+        // Only apply movement if grounded
+        if (isGrounded)
         {
-            case "forward":
-                rb.AddForce(Vector3.forward * moveForce, ForceMode.Impulse);
-                break;
-            case "backward":
-                rb.AddForce(Vector3.back * moveForce, ForceMode.Impulse);
-                break;
-            case "turnLeft":
-                rb.AddTorque(Vector3.up * -moveForce, ForceMode.Impulse);
-                break;
-            case "turnRight":
-                rb.AddTorque(Vector3.up * moveForce, ForceMode.Impulse);
-                break;
+            switch (action)
+            {
+                case "forward":
+                    rb.AddForce(Vector3.forward * moveForce, ForceMode.Impulse);
+                    break;
+                case "backward":
+                    rb.AddForce(Vector3.back * moveForce, ForceMode.Impulse);
+                    break;
+                case "turnLeft":
+                    rb.AddTorque(Vector3.up * -moveForce, ForceMode.Impulse);
+                    break;
+                case "turnRight":
+                    rb.AddTorque(Vector3.up * moveForce, ForceMode.Impulse);
+                    break;
+            }
+        }
+        else
+        {
+            // Optional: Add some feedback when trying to move while in air
+            Debug.Log("Cannot move - not grounded!");
         }
         
         // Wait for the movement duration

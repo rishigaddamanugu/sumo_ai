@@ -47,9 +47,7 @@ class Model(nn.Module):
         
         # Determine which action to take
         # 10% chance to take random action for exploration
-        if random.random() < 0.1:
-            action_idx = random.randint(0, 3)
-        elif confidence < 0.4:
+        if confidence < 0.5:
             # Use random action when confidence is low
             action_idx = random.randint(0, 3)
         else:
