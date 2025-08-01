@@ -26,7 +26,6 @@ public class AgentUnit : MonoBehaviour
     [Header("Ground Detection")]
     [SerializeField] private float groundCheckDistance = 0.1f;
     
-    private bool isGrounded = false;
     
     void Start()
     {
@@ -47,16 +46,7 @@ public class AgentUnit : MonoBehaviour
         Vector3 raycastOrigin = transform.position - new Vector3(0, GetComponent<Collider>().bounds.extents.y, 0);
         RaycastHit hit;
         isGrounded = Physics.Raycast(raycastOrigin, Vector3.down, out hit, groundCheckDistance);
-        
-        // Debug information
-        if (isGrounded)
-        {
-            Debug.Log($"Grounded! Hit: {hit.collider.name} at distance {hit.distance}");
-        }
-        else
-        {
-            Debug.Log($"Not grounded! Raycast from {raycastOrigin} down {groundCheckDistance} units.");
-        }
+        return isGrounded;
         
         // Optional: Visualize the ray in the scene view for debugging
         Debug.DrawRay(raycastOrigin, Vector3.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
@@ -118,7 +108,7 @@ public class AgentUnit : MonoBehaviour
     private IEnumerator MoveWithImpulse(string action)
     {
         // Only apply movement if grounded
-        if (isGrounded)
+        if (CheckGrounded())
         {
             switch (action)
             {
@@ -128,10 +118,10 @@ public class AgentUnit : MonoBehaviour
                 case "backward":
                     rb.AddForce(Vector3.back * moveForce, ForceMode.Impulse);
                     break;
-                case "turnLeft":
+                case "turnleft":
                     rb.AddTorque(Vector3.up * -moveForce, ForceMode.Impulse);
                     break;
-                case "turnRight":
+                case "turnright":
                     rb.AddTorque(Vector3.up * moveForce, ForceMode.Impulse);
                     break;
             }
