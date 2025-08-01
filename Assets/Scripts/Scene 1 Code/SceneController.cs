@@ -207,6 +207,24 @@ public class SceneController : MonoBehaviour
         
         // Optional: Add a small downward force to ensure landing
         agentRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
+
+        // Phase 1: Rotate 90 degrees clockwise
+        float rotateDuration = 1f;
+        float elapsedTime = 0f;
+        
+        Debug.Log("Phase 1: Rotating 90 degrees clockwise");
+        Quaternion startRotation = Agent.transform.rotation;
+        Quaternion endRotation = startRotation * Quaternion.Euler(0f, 90f, 0f);
+        
+        // Rotate first
+        while (elapsedTime < rotateDuration)
+        {
+            float progress = elapsedTime / rotateDuration;
+            Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, progress);
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
         
         // Wait a bit more for the landing to settle
         yield return new WaitForSeconds(1f);
