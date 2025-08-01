@@ -105,7 +105,7 @@ public class SceneController : MonoBehaviour
     {
         Vector3 originalPosition = Elevator.transform.position;
         float rumbleDuration = 5f;
-        float rumbleIntensity = 0.2f; // Gentle rumble intensity
+        float rumbleIntensity = 0.05f; // Gentle rumble intensity
         float rumbleSpeed = 20f; // How fast the rumble oscillates
         
         float elapsedTime = 0f;
