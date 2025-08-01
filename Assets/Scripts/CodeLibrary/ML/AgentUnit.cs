@@ -26,7 +26,7 @@ public class AgentUnit : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.linearDamping = 0.01f;
-        rb.angularDamping = 10f;
+        rb.angularDamping = 1f;
         FindObjectOfType<AgentManager>().RegisterAgent(this);
     }
     
