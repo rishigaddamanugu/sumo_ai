@@ -238,9 +238,6 @@ public class SceneController : MonoBehaviour
         // Optional: Add a small downward force to ensure landing
         agentRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
         
-        // Wait a bit more for the landing to settle
-        yield return new WaitForSeconds(1f);
-        
         Debug.Log("CubeHopOnSumoPlatform: Completed");
     }
     private IEnumerator OpenElevatorDoors()
@@ -344,7 +341,7 @@ public class SceneController : MonoBehaviour
         // Parenting so the agent moves with the platform
         Agent.transform.SetParent(SumoPlatform.transform);
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         float targetY = 10f;
         float duration = 4f;
