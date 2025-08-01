@@ -24,9 +24,9 @@ public class AgentUnit : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        // rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.linearDamping = 0.01f;
-        rb.angularDamping = 0.01f;
+        rb.angularDamping = 10f;
         FindObjectOfType<AgentManager>().RegisterAgent(this);
     }
     
@@ -101,28 +101,26 @@ public class AgentUnit : MonoBehaviour
     private IEnumerator MoveWithImpulse(string action)
     {
         // Only apply movement if grounded
-        if (CheckGrounded())
+        switch (action)
         {
-            switch (action)
-            {
-                case "forward":
+            case "forward":
+                if (CheckGrounded())
+                {
                     rb.AddForce(Vector3.forward * moveForce, ForceMode.Impulse);
-                    break;
-                case "backward":
+                }
+                break;
+            case "backward":
+                if (CheckGrounded())
+                {
                     rb.AddForce(Vector3.back * moveForce, ForceMode.Impulse);
-                    break;
-                case "turnleft":
-                    rb.AddTorque(Vector3.up * -turnForce, ForceMode.Impulse);
-                    break;
-                case "turnright":
-                    rb.AddTorque(Vector3.up * turnForce, ForceMode.Impulse);
-                    break;
-            }
-        }
-        else
-        {
-            // Optional: Add some feedback when trying to move while in air
-            Debug.Log("Cannot move - not grounded!");
+                }
+                break;
+            case "turnleft":
+                rb.AddTorque(Vector3.up * -turnForce, ForceMode.Impulse);
+                break;
+            case "turnright":
+                rb.AddTorque(Vector3.up * turnForce, ForceMode.Impulse);
+                break;
         }
         
         // Wait for the movement duration
