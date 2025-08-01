@@ -16,7 +16,8 @@ public class SceneController : MonoBehaviour
     public GameObject Scoreboard;
     public GameObject ElevatorL;
     public GameObject ElevatorR;
-    public GameObject TrapDoor;
+    public GameObject TrapDoorL;
+    public GameObject TrapDoorR;
     
     void Start()
     {
@@ -556,27 +557,32 @@ public class SceneController : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         
-        float targetZ = TrapDoor.transform.position.z + 2f; // Move 3 units in Z direction
-        float duration = 2f;
-        Vector3 position = TrapDoor.transform.position;
-        float startZ = position.z;
-        float distance = targetZ - startZ;
-        float speed = distance / duration;
-
+        Vector3 leftDoorOriginalPos = TrapDoorL.transform.position;
+        Vector3 rightDoorOriginalPos = TrapDoorR.transform.position;
+        
+        float doorOpenDistance = 20f; // How far the doors move apart
+        float doorOpenDuration = 2f; // How long the door opening takes
+        
         float elapsedTime = 0f;
-
-        while (elapsedTime < duration)
+        
+        while (elapsedTime < doorOpenDuration)
         {
-            float moveThisFrame = speed * Time.deltaTime;
-            position.z += moveThisFrame;
-            TrapDoor.transform.position = position;
-
+            float progress = elapsedTime / doorOpenDuration;
+            
+            // Move left door to the left
+            Vector3 leftDoorNewPos = leftDoorOriginalPos + Vector3.left * doorOpenDistance * progress;
+            TrapDoorL.transform.position = leftDoorNewPos;
+            
+            // Move right door to the right
+            Vector3 rightDoorNewPos = rightDoorOriginalPos + Vector3.right * doorOpenDistance * progress;
+            TrapDoorR.transform.position = rightDoorNewPos;
+            
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
-        // Stop exactly at target to avoid overshoot
-        position.z = targetZ;
-        TrapDoor.transform.position = position;
+        
+        // Ensure doors are fully open
+        TrapDoorL.transform.position = leftDoorOriginalPos + Vector3.left * doorOpenDistance;
+        TrapDoorR.transform.position = rightDoorOriginalPos + Vector3.right * doorOpenDistance;
     }
 }
