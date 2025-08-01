@@ -24,7 +24,7 @@ public class SceneController : MonoBehaviour
     
     private IEnumerator ExecuteSceneBits()
     {
-        // yield return StartCoroutine(SceneBit1());
+        yield return StartCoroutine(SceneBit1());
         yield return StartCoroutine(SceneBit2());
         yield return StartCoroutine(SceneBit3());
         yield return StartCoroutine(SceneBit4());
@@ -38,7 +38,7 @@ public class SceneController : MonoBehaviour
         Debug.Log("Scene Bit 1: Starting");
         
         // Start both elevator rumble and agent floating concurrently
-        StartCoroutine(AgentFloatAndFall());
+        // StartCoroutine(AgentFloatAndFall());
         yield return StartCoroutine(RumbleElevator());
         yield return new WaitForSeconds(1f);
         
@@ -79,9 +79,9 @@ public class SceneController : MonoBehaviour
      private IEnumerator SceneBit4()
     {
         // Cube hops on platform
-        Debug.Log("Scene Bit 3: Starting");
+        Debug.Log("Scene Bit 4: Starting");
         yield return StartCoroutine(CubeHopOnSumoPlatform());
-        Debug.Log("Scene Bit 3: Completed");
+        Debug.Log("Scene Bit 4: Completed");
     }
     
 
@@ -164,22 +164,7 @@ public class SceneController : MonoBehaviour
     }
     private IEnumerator CubeHopOnSumoPlatform()
     {
-        // hop the cube onto the sumo platform
-        // it basically just needs to move forward to the platform and then stop
-        Vector3 startPosition = Agent.transform.position;
-        float hopDistance = 10f; // How far to hop in -Z direction
-        float hopDuration = 2f; // How long to hop
-        float elapsedTime = 0f;
-        
-        while (elapsedTime < hopDuration)
-        {
-            float progress = elapsedTime / hopDuration;
-            Vector3 newPosition = startPosition + Vector3.forward * hopDistance * progress;
-            Agent.transform.position = newPosition;
-            
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+        yield return new WaitForSeconds(1f);
     }
     private IEnumerator OpenElevatorDoors()
     {
@@ -312,17 +297,52 @@ public class SceneController : MonoBehaviour
         Vector3 startPosition = Agent.transform.position;
         float moveSpeed = 6f; // Units per second
         
-        // Phase 1: Move -X (left)
-        float phase1Distance = 10f;
-        float phase1Duration = phase1Distance / moveSpeed;
+        // Phase 1: Rotate 90 degrees clockwise, then move forward relative to cube
+        float rotateDuration = 1f;
         float elapsedTime = 0f;
         
-        Debug.Log("Phase 1: Moving left (-X)");
+        Debug.Log("Phase 1: Rotating 90 degrees clockwise");
+        Quaternion startRotation = Agent.transform.rotation;
+        Quaternion endRotation = startRotation * Quaternion.Euler(0f, 90f, 0f);
+        
+        // Rotate first
+        while (elapsedTime < rotateDuration)
+        {
+            float progress = elapsedTime / rotateDuration;
+            Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, progress);
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Now move forward relative to the rotated cube
+        float phase1Distance = 10f;
+        float phase1Duration = phase1Distance / moveSpeed;
+        elapsedTime = 0f;
+        
+        Debug.Log("Phase 1: Moving forward relative to cube");
         while (elapsedTime < phase1Duration)
         {
             float progress = elapsedTime / phase1Duration;
-            Vector3 newPosition = startPosition + Vector3.left * phase1Distance * progress;
+            Vector3 newPosition = startPosition + Agent.transform.forward * phase1Distance * progress;
             Agent.transform.position = newPosition;
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Rotate 90 degrees counter-clockwise before Phase 2
+        rotateDuration = 1f;
+        elapsedTime = 0f;
+        
+        Debug.Log("Rotating 90 degrees counter-clockwise before Phase 2");
+        startRotation = Agent.transform.rotation;
+        endRotation = startRotation * Quaternion.Euler(0f, -90f, 0f);
+        
+        while (elapsedTime < rotateDuration)
+        {
+            float progress = elapsedTime / rotateDuration;
+            Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, progress);
             
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -340,23 +360,28 @@ public class SceneController : MonoBehaviour
             float progress = elapsedTime / phase2Duration;
             Vector3 newPosition = phase2StartPos + Vector3.forward * phase2Distance * progress;
             Agent.transform.position = newPosition;
+
+            if (elapsedTime >= 0.5f && elapsedTime < 0.6f) 
+            {
+                SwitchToCubeCamera();
+            }
             
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         
-        // Phase 3: Move +X (right) to center of platform
-        Vector3 phase3StartPos = Agent.transform.position;
-        float phase3Distance = 7f;
-        float phase3Duration = phase3Distance / moveSpeed;
+        // Rotate 90 degrees counter-clockwise before Phase 2
+        rotateDuration = 1f;
         elapsedTime = 0f;
         
-        Debug.Log("Phase 3: Moving right (+X) to platform center");
-        while (elapsedTime < phase3Duration)
+        Debug.Log("Rotating 90 degrees counter-clockwise before Phase 3");
+        startRotation = Agent.transform.rotation;
+        endRotation = startRotation * Quaternion.Euler(0f, -90f, 0f);
+        
+        while (elapsedTime < rotateDuration)
         {
-            float progress = elapsedTime / phase3Duration;
-            Vector3 newPosition = phase3StartPos + Vector3.right * phase3Distance * progress;
-            Agent.transform.position = newPosition;
+            float progress = elapsedTime / rotateDuration;
+            Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, progress);
             
             elapsedTime += Time.deltaTime;
             yield return null;
