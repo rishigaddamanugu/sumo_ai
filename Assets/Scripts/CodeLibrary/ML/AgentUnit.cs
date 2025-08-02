@@ -10,8 +10,8 @@ public class AgentUnit : MonoBehaviour
     private Rigidbody rb;
     
     
-    [SerializeField] private float moveForce = 0.1f;
-    [SerializeField] private float turnForce = 0.001f;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float turnSpeed = 100f;
     [SerializeField] private float moveDuration = 0f;
     
     [Header("Death Detection")]
@@ -79,7 +79,7 @@ public class AgentUnit : MonoBehaviour
         if (!hasAction) return;
 
         isMoving = true;
-        StartCoroutine(MoveWithImpulse(pendingAction));
+        StartCoroutine(PerformAction(pendingAction));
         
         hasAction = false;
         pendingAction = null;
@@ -98,31 +98,38 @@ public class AgentUnit : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveWithImpulse(string action)
+    private IEnumerator PerformAction(string action)
     {
         // Only apply movement if grounded
+        bool grounded = CheckGrounded();
+        Debug.Log("Grounded: " + grounded);
+        if (!grounded)
+        {
+            isMoving = false;
+            yield break;
+        }
+
+        Vector3 move = Vector3.zero;
+        Quaternion turn = Quaternion.identity;
+        Debug.Log("Performing action: " + action);
         switch (action)
         {
             case "forward":
-                if (CheckGrounded())
-                {
-                    rb.AddForce(Vector3.forward * moveForce, ForceMode.Impulse);
-                }
+                rb.AddForce(transform.forward * moveSpeed, ForceMode.Impulse);
                 break;
+
             case "backward":
-                if (CheckGrounded())
-                {
-                    rb.AddForce(Vector3.back * moveForce, ForceMode.Impulse);
-                }
+                rb.AddForce(-transform.forward * moveSpeed, ForceMode.Impulse);
                 break;
+
             case "turnleft":
-                rb.AddTorque(Vector3.up * -turnForce, ForceMode.Impulse);
+                transform.Rotate(Vector3.up, -turnSpeed * moveDuration);
                 break;
+
             case "turnright":
-                rb.AddTorque(Vector3.up * turnForce, ForceMode.Impulse);
+                transform.Rotate(Vector3.up, turnSpeed * moveDuration);
                 break;
         }
-        
         // Wait for the movement duration
         yield return new WaitForSeconds(moveDuration);
         

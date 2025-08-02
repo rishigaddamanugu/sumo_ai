@@ -390,7 +390,7 @@ PrefabInstance:
     - target: {fileID: 4579726519118286584, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       propertyPath: opponent
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 787198182}
     - target: {fileID: 6835651544490117325, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       propertyPath: opponent
       value: 
