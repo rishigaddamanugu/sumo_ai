@@ -100,39 +100,54 @@ public class AgentUnit : MonoBehaviour
 
     private IEnumerator PerformAction(string action)
     {
-        // Only apply movement if grounded
-        bool grounded = CheckGrounded();
-        Debug.Log("Grounded: " + grounded);
-        if (!grounded)
+        if (!CheckGrounded())
         {
             isMoving = false;
             yield break;
         }
 
-        Vector3 move = Vector3.zero;
-        Quaternion turn = Quaternion.identity;
-        Debug.Log("Performing action: " + action);
+        float elapsed = 0f;
+
+        Vector3 moveDirection = Vector3.zero;
+        float totalTurnAngle = 0f;
+
         switch (action)
         {
             case "forward":
-                rb.AddForce(transform.forward * moveSpeed, ForceMode.Impulse);
+                moveDirection = transform.forward;
                 break;
 
             case "backward":
-                rb.AddForce(-transform.forward * moveSpeed, ForceMode.Impulse);
+                moveDirection = -transform.forward;
                 break;
 
             case "turnleft":
-                transform.Rotate(Vector3.up, -turnSpeed * moveDuration);
+                totalTurnAngle = -turnSpeed * moveDuration;
                 break;
 
             case "turnright":
-                transform.Rotate(Vector3.up, turnSpeed * moveDuration);
+                totalTurnAngle = turnSpeed * moveDuration;
                 break;
         }
-        // Wait for the movement duration
-        yield return new WaitForSeconds(moveDuration);
-        
+
+        while (elapsed < moveDuration)
+        {
+            float delta = Time.deltaTime;
+            elapsed += delta;
+
+            if (moveDirection != Vector3.zero)
+                transform.position += moveDirection * moveSpeed * delta;
+
+            if (Mathf.Abs(totalTurnAngle) > 0f)
+            {
+                float angleStep = (totalTurnAngle / moveDuration) * delta;
+                transform.Rotate(Vector3.up, angleStep);
+            }
+
+            yield return null;
+        }
+
         isMoving = false;
     }
+
 }
