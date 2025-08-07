@@ -114,38 +114,24 @@ public class AgentUnit : MonoBehaviour
         switch (action)
         {
             case "forward":
-                moveDirection = transform.forward;
+                rb.AddForce(transform.forward * moveSpeed, ForceMode.VelocityChange);
                 break;
 
             case "backward":
-                moveDirection = -transform.forward;
+                rb.AddForce(-transform.forward * moveSpeed, ForceMode.VelocityChange);
                 break;
 
             case "turnleft":
-                totalTurnAngle = -turnSpeed * moveDuration;
+                rb.AddTorque(Vector3.up * -turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
 
             case "turnright":
-                totalTurnAngle = turnSpeed * moveDuration;
+                rb.AddTorque(Vector3.up * turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
         }
 
-        while (elapsed < moveDuration)
-        {
-            float delta = Time.deltaTime;
-            elapsed += delta;
-
-            if (moveDirection != Vector3.zero)
-                transform.position += moveDirection * moveSpeed * delta;
-
-            if (Mathf.Abs(totalTurnAngle) > 0f)
-            {
-                float angleStep = (totalTurnAngle / moveDuration) * delta;
-                transform.Rotate(Vector3.up, angleStep);
-            }
-
-            yield return null;
-        }
+        // All actions are now instant physics-based, no need to wait
+        yield return null;
 
         isMoving = false;
     }
