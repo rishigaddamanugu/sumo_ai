@@ -20,6 +20,8 @@ public class AgentUnit : MonoBehaviour
     [Header("Ground Detection")]
     [SerializeField] private float groundCheckDistance = 0.1f;
     
+
+    public GameObject platform;
     
     void Start()
     {
@@ -32,17 +34,21 @@ public class AgentUnit : MonoBehaviour
     
     void Update()
     {
-        CheckGrounded();
+        CheckOnPlatform();
     }
     
-    private bool CheckGrounded()
+    private bool CheckOnPlatform()
     {
-        // Cast a ray downward from the bottom of the cube
-        Vector3 raycastOrigin = transform.position - new Vector3(0, GetComponent<Collider>().bounds.extents.y, 0);
-        RaycastHit hit;
-        bool isGrounded = Physics.Raycast(raycastOrigin, Vector3.down, out hit, groundCheckDistance);
+        if (platform == null) return false;
         
-        return isGrounded;
+        // Get the distance between the agent and the platform
+        float distanceToPlatform = Mathf.Abs(transform.position.y - platform.transform.position.y);
+        
+        // Simple threshold check - if agent is within this distance, consider it "on" the platform
+        bool isOnPlatform = distanceToPlatform <= 1.2f; // Adjust this value as needed
+        
+        Debug.Log("Distance to platform: " + distanceToPlatform);
+        return isOnPlatform;
     }
     
 
@@ -100,7 +106,7 @@ public class AgentUnit : MonoBehaviour
 
     private IEnumerator PerformAction(string action)
     {
-        if (!CheckGrounded())
+        if (!CheckOnPlatform())
         {
             isMoving = false;
             yield break;
