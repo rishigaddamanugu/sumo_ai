@@ -85,15 +85,26 @@ public class AgentManager : MonoBehaviour
 
     IEnumerator ParallelAgentLoop()
     {
+        float queryTimer = 0f;
+        float queryInterval = 0.5f;
+        
         while (true)
         {
             // Wait until all agents are ready for their next action
             yield return new WaitUntil(() => agents.All(agent => !agent.IsBusy()));
 
-            // Process all agents in parallel
-            yield return StartCoroutine(ProcessAllAgentsParallel());
-
-            yield return null; // Small delay between cycles
+            // Accumulate time
+            queryTimer += Time.deltaTime;
+            
+            // Only query every 0.5 seconds
+            if (queryTimer >= queryInterval)
+            {
+                // Process all agents in parallel
+                yield return StartCoroutine(ProcessAllAgentsParallel());
+                queryTimer = 0f; // Reset timer
+            }
+            
+            yield return null;
         }
     }
 
