@@ -121,19 +121,19 @@ public class AgentUnit : MonoBehaviour
         switch (action)
         {
             case "forward":
-                rb.AddTorque(transform.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
+                rb.AddForce(Vector3.forward * moveSpeed, ForceMode.VelocityChange);
                 break;
 
             case "backward":
-                rb.AddTorque(-transform.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
+                rb.AddForce(Vector3.back * moveSpeed, ForceMode.VelocityChange);
                 break;
 
             case "left":
-                rb.AddTorque(transform.up * -turnSpeed * 0.1f, ForceMode.VelocityChange);
+                rb.AddForce(Vector3.left * moveSpeed, ForceMode.VelocityChange);
                 break;
 
             case "right":
-                rb.AddTorque(transform.up * turnSpeed * 0.1f, ForceMode.VelocityChange);
+                rb.AddForce(Vector3.right * moveSpeed, ForceMode.VelocityChange);
                 break;
         }
 
