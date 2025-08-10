@@ -83,7 +83,6 @@ public class SceneController : MonoBehaviour
 
      private IEnumerator SceneBit4()
     {
-        SwitchToPlatformCamera();
         // Cube hops on platform
         Debug.Log("Scene Bit 4: Starting");
         SwitchToPlatformCamera();
@@ -495,6 +494,8 @@ public class SceneController : MonoBehaviour
             yield return null;
         }
         // Rotate 90 degrees counter-clockwise before Phase 2
+
+        SwitchToPlatformCamera();
         rotateDuration = 1f;
         elapsedTime = 0f;
         
