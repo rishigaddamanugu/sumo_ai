@@ -562,19 +562,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3772460581855559976, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.007620944
+      value: 0.0076183393
       objectReference: {fileID: 0}
     - target: {fileID: 3772460581855559976, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0016647989
+      value: 0.0016667607
       objectReference: {fileID: 0}
     - target: {fileID: 3772460581855559976, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.99996966
+      value: 0.9999696
       objectReference: {fileID: 0}
     - target: {fileID: 3772460581855559976, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000006332993
+      value: 0.000003990781
       objectReference: {fileID: 0}
     - target: {fileID: 3772460581855559976, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -623,19 +623,19 @@ ParentConstraint:
   serializedVersion: 2
   m_Weight: 1
   m_TranslationAtRest: {x: -2.42, y: 16.18, z: 2.51}
-  m_RotationAtRest: {x: 0.0013812928, y: 179.1267, z: 0.19076689}
+  m_RotationAtRest: {x: 0.0009977814, y: 179.127, z: 0.19099462}
   m_TranslationOffsets:
   - {x: 0, y: 3, z: 0}
   m_RotationOffsets:
-  - {x: 0.0013812926, y: 179.1267, z: 0.19076687}
+  - {x: 0.0009977814, y: 179.127, z: 0.19099462}
   m_AffectTranslationX: 0
   m_AffectTranslationY: 0
   m_AffectTranslationZ: 0
   m_AffectRotationX: 1
-  m_AffectRotationY: 0
+  m_AffectRotationY: 1
   m_AffectRotationZ: 1
   m_Active: 1
-  m_IsLocked: 0
+  m_IsLocked: 1
   m_Sources:
   - sourceTransform: {fileID: 619667182}
     weight: 1

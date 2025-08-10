@@ -97,7 +97,8 @@ public class AgentUnit : MonoBehaviour
             float agentY = transform.position.y;
             float heightDistance = Mathf.Abs(agentY - groundY);
             // Had to adjust threshold since ML model was double counting death on the fall to ground
-            if (heightDistance < 2.6f) // Adjust threshold as needed
+            Debug.Log("Height distance: " + heightDistance);
+            if (heightDistance < 3f) // Adjust threshold as needed
             {
                 isDead = true;
             }
@@ -120,11 +121,11 @@ public class AgentUnit : MonoBehaviour
         switch (action)
         {
             case "forward":
-                rb.AddForce(transform.forward * moveSpeed, ForceMode.VelocityChange);
+                rb.AddForce(Vector3.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
 
             case "backward":
-                rb.AddForce(-transform.forward * moveSpeed, ForceMode.VelocityChange);
+                rb.AddForce(-Vector3.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
 
             case "turnleft":
