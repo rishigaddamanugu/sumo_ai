@@ -18,6 +18,7 @@ public class SceneController : MonoBehaviour
     public GameObject ElevatorR;
     public GameObject TrapDoorL;
     public GameObject TrapDoorR;
+    public GameObject CubeDistanceCamera;
     
     void Start()
     {
@@ -152,6 +153,7 @@ public class SceneController : MonoBehaviour
         CubeRevolveCamera.SetActive(false);
         InbetweenCamera.SetActive(false);
         PlatformCamera.SetActive(false);
+        CubeDistanceCamera.SetActive(false);
     }
 
     private void SwitchToPlatformCamera()
@@ -163,6 +165,7 @@ public class SceneController : MonoBehaviour
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
         InbetweenCamera.SetActive(false);
+        CubeDistanceCamera.SetActive(false);
     }
 
     private void SwitchToElevatorCamera()
@@ -177,6 +180,7 @@ public class SceneController : MonoBehaviour
         CubeRevolveCamera.SetActive(false);
         InbetweenCamera.SetActive(false);
         PlatformCamera.SetActive(false);
+        CubeDistanceCamera.SetActive(false);
     }
 
     private void SwitchToInbetweenCamera()
@@ -189,6 +193,19 @@ public class SceneController : MonoBehaviour
         CubeSideCamera.SetActive(false);
         CubeRevolveCamera.SetActive(false);
         PlatformCamera.SetActive(false);
+        CubeDistanceCamera.SetActive(false);
+    }
+
+    private void SwitchToCubeDistanceCamera()
+    {
+        Debug.Log("Switching to Cube Distance Camera");
+        CubeDistanceCamera.SetActive(true);
+        ElevatorCamera.SetActive(false);
+        CubeCamera.SetActive(false);
+        CubeSideCamera.SetActive(false);
+        CubeRevolveCamera.SetActive(false);
+        PlatformCamera.SetActive(false);
+        InbetweenCamera.SetActive(false);
     }
     private IEnumerator CubeHopOnSumoPlatform()
     {
@@ -473,6 +490,7 @@ public class SceneController : MonoBehaviour
         }
         
         // Phase 2: Move -Z (forward)
+
         Vector3 phase2StartPos = Agent.transform.position;
         float phase2Distance = SumoPlatform.transform.position.z - Agent.transform.position.z;
         float phase2Duration = Mathf.Abs(phase2Distance) / moveSpeed;
@@ -487,7 +505,7 @@ public class SceneController : MonoBehaviour
 
             if (elapsedTime >= 0.5f && elapsedTime < 0.6f) 
             {
-                SwitchToCubeCamera();
+                SwitchToCubeDistanceCamera();
             }
             
             elapsedTime += Time.deltaTime;
