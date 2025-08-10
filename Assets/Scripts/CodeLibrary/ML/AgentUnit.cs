@@ -10,7 +10,7 @@ public class AgentUnit : MonoBehaviour
     private Rigidbody rb;
     
     
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float turnSpeed = 100f;
     [SerializeField] private float moveDuration = 0f;
     
@@ -26,7 +26,6 @@ public class AgentUnit : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        // rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.linearDamping = 0.01f;
         rb.angularDamping = 1f;
         FindObjectOfType<AgentManager>().RegisterAgent(this);
@@ -121,19 +120,19 @@ public class AgentUnit : MonoBehaviour
         switch (action)
         {
             case "forward":
-                rb.AddForce(Vector3.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
+                rb.AddTorque(transform.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
 
             case "backward":
-                rb.AddForce(-Vector3.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
+                rb.AddTorque(-transform.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
 
             case "turnleft":
-                rb.AddTorque(Vector3.up * -turnSpeed * 0.1f, ForceMode.VelocityChange);
+                rb.AddTorque(transform.up * -turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
 
             case "turnright":
-                rb.AddTorque(Vector3.up * turnSpeed * 0.1f, ForceMode.VelocityChange);
+                rb.AddTorque(transform.up * turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
         }
 
