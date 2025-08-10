@@ -317,6 +317,7 @@ MonoBehaviour:
   moveDuration: 0
   ground: {fileID: 1482239211}
   groundCheckDistance: 0.1
+  cubeAgent: {fileID: 186439625}
   platform: {fileID: 277059970}
 --- !u!1 &1482239211 stripped
 GameObject:
@@ -582,28 +583,22 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 444478599093302328, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 464203099284425517}
+      addedObject: {fileID: 464203099284425522}
   m_SourcePrefab: {fileID: 100100000, guid: 2aa2a4e5b701a4c8681596e6c3200c60, type: 3}
---- !u!1818360608 &464203099284425517
-PositionConstraint:
+--- !u!114 &464203099284425522
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 186439625}
   m_Enabled: 1
-  serializedVersion: 2
-  m_Weight: 1
-  m_TranslationAtRest: {x: -2.42, y: 16.18, z: 2.51}
-  m_TranslationOffset: {x: 0, y: 3, z: 0}
-  m_AffectTranslationX: 0
-  m_AffectTranslationY: 0
-  m_AffectTranslationZ: 0
-  m_Active: 1
-  m_IsLocked: 1
-  m_Sources:
-  - sourceTransform: {fileID: 619667182}
-    weight: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f6f5d912fc4d4fd5a7acc1e52520231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ball: {fileID: 619667182}
+  preserveInitialYaw: 1
 --- !u!1001 &1517981686469993652
 PrefabInstance:
   m_ObjectHideFlags: 0

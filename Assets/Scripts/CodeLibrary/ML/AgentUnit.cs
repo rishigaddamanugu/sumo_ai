@@ -21,6 +21,7 @@ public class AgentUnit : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 0.1f;
     
 
+    public GameObject cubeAgent;
     public GameObject platform;
     
     void Start()

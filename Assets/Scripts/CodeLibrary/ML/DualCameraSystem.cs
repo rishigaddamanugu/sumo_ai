@@ -24,6 +24,7 @@ public class DualCameraSystem : MonoBehaviour
     private float lastSwitchTime;
     private float orbitAngle = 0f;
     
+    
     void Start()
     {
         SetupMainCamera();
