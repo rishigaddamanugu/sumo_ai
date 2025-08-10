@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8370a82435dfd4bd88706459cc05c99e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  opponent: {fileID: 0}
+  opponent: {fileID: 1706636932}
 --- !u!114 &619667185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05239834fcc0340aca4416b7704aac37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  opponent: {fileID: 0}
+  opponent: {fileID: 1706636932}
   ground: {fileID: 1482239211}
 --- !u!114 &619667186
 MonoBehaviour:

@@ -3,7 +3,7 @@ using UnityEngine;
 public class DualCameraSystem : MonoBehaviour
 {
     [Header("Main Camera Settings")]
-    private Vector3 mainCameraPosition = new Vector3(0, 17, -16.5);
+    private Vector3 mainCameraPosition = new Vector3(0, 17, -16.5f);
     private Vector3 mainCameraRotation = new Vector3(10, 0, 0);
     private Vector3 mainCameraScale = Vector3.one;
     
