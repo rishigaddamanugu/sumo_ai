@@ -26,7 +26,7 @@ public class AgentUnit : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        // rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.linearDamping = 0.01f;
         rb.angularDamping = 1f;
         FindObjectOfType<AgentManager>().RegisterAgent(this);
@@ -98,7 +98,7 @@ public class AgentUnit : MonoBehaviour
             float heightDistance = Mathf.Abs(agentY - groundY);
             // Had to adjust threshold since ML model was double counting death on the fall to ground
             Debug.Log("Height distance: " + heightDistance);
-            if (heightDistance < 3f) // Adjust threshold as needed
+            if (heightDistance <= 3f) // Adjust threshold as needed
             {
                 isDead = true;
             }
