@@ -44,7 +44,7 @@ public class RewardFunction : MonoBehaviour
             float agentHeightDistance = Mathf.Abs(agentY - groundY);
             
             // Had to adjust threshold since ML model was double counting death on the fall to ground
-            if (agentHeightDistance < 1.19f) // Match the threshold used in AgentUnit
+            if (agentHeightDistance < 2.6f) // Match the threshold used in AgentUnit
             {
                 return -100f; // Very negative reward for falling off
             }
@@ -56,7 +56,7 @@ public class RewardFunction : MonoBehaviour
             float groundY = ground.transform.position.y;
             float opponentY = opponent.transform.position.y;
             float opponentHeightDistance = Mathf.Abs(opponentY - groundY);
-            if (opponentHeightDistance < 1.5f) // Match the threshold used in AgentUnit
+            if (opponentHeightDistance < 2.6f) // Match the threshold used in AgentUnit
             {
                 return 100f; // Super positive reward for opponent falling
             }

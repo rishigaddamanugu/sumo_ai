@@ -45,7 +45,7 @@ public class AgentUnit : MonoBehaviour
         float distanceToPlatform = Mathf.Abs(transform.position.y - platform.transform.position.y);
         
         // Simple threshold check - if agent is within this distance, consider it "on" the platform
-        bool isOnPlatform = distanceToPlatform <= 1.2f; // Adjust this value as needed
+        bool isOnPlatform = distanceToPlatform <= 3f; // Adjust this value as needed
         
         Debug.Log("Distance to platform: " + distanceToPlatform);
         return isOnPlatform;
@@ -97,7 +97,7 @@ public class AgentUnit : MonoBehaviour
             float agentY = transform.position.y;
             float heightDistance = Mathf.Abs(agentY - groundY);
             // Had to adjust threshold since ML model was double counting death on the fall to ground
-            if (heightDistance < 1.19f) // Adjust threshold as needed
+            if (heightDistance < 2.6f) // Adjust threshold as needed
             {
                 isDead = true;
             }
