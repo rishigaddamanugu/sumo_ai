@@ -69,7 +69,7 @@ class Model(nn.Module):
             self.train_with_reward_scaling()
 
         # Return the action that was actually taken
-        actions = ["forward", "backward", "turnleft", "turnright"]
+        actions = ["forward", "backward", "left", "right"]
         return actions[action_idx]
 
     def train_with_reward_scaling(self):

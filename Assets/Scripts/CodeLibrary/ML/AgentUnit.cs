@@ -128,11 +128,11 @@ public class AgentUnit : MonoBehaviour
                 rb.AddTorque(-transform.right * turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
 
-            case "turnleft":
+            case "left":
                 rb.AddTorque(transform.up * -turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
 
-            case "turnright":
+            case "right":
                 rb.AddTorque(transform.up * turnSpeed * 0.1f, ForceMode.VelocityChange);
                 break;
         }

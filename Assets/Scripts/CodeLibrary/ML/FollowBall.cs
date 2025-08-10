@@ -27,10 +27,10 @@ public class FollowBall : MonoBehaviour
         // Follow position
         transform.position = ball.position + positionOffset;
 
+        // Temporarily disabled rotation - keep original rotation
         // Copy only Y rotation from the ball
-        float ballYaw = ball.eulerAngles.y;
-        float targetYaw = preserveInitialYaw ? ballYaw + initialYawOffset : ballYaw;
-
-        transform.rotation = Quaternion.Euler(0f, targetYaw, 0f);
+        // float ballYaw = ball.eulerAngles.y;
+        // float targetYaw = preserveInitialYaw ? ballYaw + initialYawOffset : ballYaw;
+        // transform.rotation = Quaternion.Euler(0f, targetYaw, 0f);
     }
 }
