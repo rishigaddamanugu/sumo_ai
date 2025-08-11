@@ -496,7 +496,7 @@ public class SceneController : MonoBehaviour
         // Phase 2: Move -Z (forward)
 
         Vector3 phase2StartPos = Agent.transform.position;
-        float phase2Distance = SumoPlatform.transform.position.z - Agent.transform.position.z;
+        float phase2Distance = SumoPlatform.transform.position.z + SumoPlatform.transform.localScale.z - Agent.transform.position.z;
         float phase2Duration = Mathf.Abs(phase2Distance) / moveSpeed;
         elapsedTime = 0f;
         
@@ -518,21 +518,21 @@ public class SceneController : MonoBehaviour
         // Rotate 90 degrees counter-clockwise before Phase 2
 
         SwitchToPlatformCamera();
-        rotateDuration = 1f;
-        elapsedTime = 0f;
+        // rotateDuration = 1f;
+        // elapsedTime = 0f;
         
-        Debug.Log("Rotating 90 degrees counter-clockwise before big jump.");
-        startRotation = Agent.transform.rotation;
-        endRotation = startRotation * Quaternion.Euler(0f, -90f, 0f);
+        // Debug.Log("Rotating 90 degrees counter-clockwise before big jump.");
+        // startRotation = Agent.transform.rotation;
+        // endRotation = startRotation * Quaternion.Euler(0f, -90f, 0f);
         
-        while (elapsedTime < rotateDuration)
-        {
-            float progress = elapsedTime / rotateDuration;
-            Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, progress);
+        // while (elapsedTime < rotateDuration)
+        // {
+        //     float progress = elapsedTime / rotateDuration;
+        //     Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, progress);
             
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+        //     elapsedTime += Time.deltaTime;
+        //     yield return null;
+        // }
         
         Debug.Log("CubeSlideToSumoPlatform: Completed");
     }
