@@ -3,13 +3,13 @@ using UnityEngine;
 public class DualCameraSystem : MonoBehaviour
 {
     [Header("Main Camera Settings")]
-    private Vector3 mainCameraPosition = new Vector3(0, 17, -16.5f);
+    private Vector3 mainCameraPosition = new Vector3(0, 18.5f, -23.25f);
     private Vector3 mainCameraRotation = new Vector3(10, 0, 0);
     private Vector3 mainCameraScale = Vector3.one;
     
     [Header("Orbiting Camera Settings")]
     public Transform centralPlatform; // Assign in inspector
-    private float orbitRadius = 20f;
+    private float orbitRadius = 25f;
     private float orbitHeight = 15f;
     private float orbitSpeed = 20f; // Degrees per second
     
