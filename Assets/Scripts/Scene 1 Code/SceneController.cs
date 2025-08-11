@@ -4,6 +4,7 @@ using System.Collections;
 public class SceneController : MonoBehaviour
 {
     public GameObject Agent;
+    public GameObject AgentSphere;
     public GameObject Elevator;
     public GameObject SumoPlatform;
     public GameObject Stadium;
@@ -86,7 +87,7 @@ public class SceneController : MonoBehaviour
     {
         // Cube hops on platform
         Debug.Log("Scene Bit 4: Starting");
-        SwitchToPlatformCamera();
+        // SwitchToPlatformCamera();
         yield return StartCoroutine(CubeHopOnSumoPlatform());
         Debug.Log("Scene Bit 4: Completed");
     }
@@ -223,34 +224,24 @@ public class SceneController : MonoBehaviour
         Vector3 agentToPlatform = SumoPlatform.transform.position - Agent.transform.position;
         float distanceToPlatform = agentToPlatform.magnitude;
         
-        // Calculate jump parameters based on distance to platform
+        // Calculate jump parameters for precise landing on platform
         Vector3 jumpDirection = agentToPlatform.normalized; // Jump towards platform
-        float jumpForce = Mathf.Max(8f, distanceToPlatform * 0.8f); // Scale upward force with distance
-        float forwardForce = Mathf.Max(6f, distanceToPlatform * 0.6f); // Scale forward force with distance
+        float jumpForce = Mathf.Max(3f, distanceToPlatform * 0.3f); // Reduced upward force for smaller arc
+        float forwardForce = Mathf.Max(3f, distanceToPlatform * 0.4f); // Reduced forward force to prevent overshooting
         
         // Apply the jump force (upward + forward)
         Vector3 jumpVector = Vector3.up * jumpForce + jumpDirection * forwardForce;
         agentRigidbody.AddForce(jumpVector, ForceMode.Impulse);
         
-        // Calculate jump duration based on distance
-        float jumpDuration = Mathf.Max(3f, distanceToPlatform * 0.3f); // Scale duration with distance
-        float rotateDuration = jumpDuration * 0.67f; // Rotation duration (slightly shorter than jump)
+        // Calculate jump duration based on distance (shorter for more direct jump)
+        float jumpDuration = Mathf.Max(1.5f, distanceToPlatform * 0.15f); // Reduced duration
         float elapsedTime = 0f;
         
-        Debug.Log($"Jumping and rotating simultaneously - Distance: {distanceToPlatform:F2}, Duration: {jumpDuration:F2}");
-        Quaternion startRotation = Agent.transform.rotation;
-        Quaternion endRotation = startRotation * Quaternion.Euler(0f, 90f, 0f);
+        Debug.Log($"Jumping directly to platform - Distance: {distanceToPlatform:F2}, Duration: {jumpDuration:F2}");
         
-        // Perform jump and rotation at the same time
+        // Perform jump without rotation
         while (elapsedTime < jumpDuration)
         {
-            // Handle rotation (only during the first part of the jump)
-            if (elapsedTime < rotateDuration)
-            {
-                float rotationProgress = elapsedTime / rotateDuration;
-                Agent.transform.rotation = Quaternion.Slerp(startRotation, endRotation, rotationProgress);
-            }
-            
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -496,7 +487,7 @@ public class SceneController : MonoBehaviour
         // Phase 2: Move -Z (forward)
 
         Vector3 phase2StartPos = Agent.transform.position;
-        float phase2Distance = SumoPlatform.transform.position.z + SumoPlatform.transform.localScale.z - Agent.transform.position.z;
+        float phase2Distance = SumoPlatform.transform.position.z + (SumoPlatform.transform.localScale.z) - 6f - Agent.transform.position.z;
         float phase2Duration = Mathf.Abs(phase2Distance) / moveSpeed;
         elapsedTime = 0f;
         
@@ -517,7 +508,7 @@ public class SceneController : MonoBehaviour
         }
         // Rotate 90 degrees counter-clockwise before Phase 2
 
-        SwitchToPlatformCamera();
+        // SwitchToPlatformCamera();
         // rotateDuration = 1f;
         // elapsedTime = 0f;
         
