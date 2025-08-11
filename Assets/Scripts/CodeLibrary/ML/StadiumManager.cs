@@ -76,6 +76,7 @@ public class StadiumManager : MonoBehaviour
         {
             ted.transform.position = tedOriginalPosition;
             ted.transform.rotation = tedOriginalRotation;
+            ResetPhysics(ted);
         }
         
         // Reset Bob to original position and rotation
@@ -83,12 +84,23 @@ public class StadiumManager : MonoBehaviour
         {
             bob.transform.position = bobOriginalPosition;
             bob.transform.rotation = bobOriginalRotation;
+            ResetPhysics(bob);
         }
 
         // Reset timer
         resetTimer();
         IncrementRound();
         
+    }
+    
+    private void ResetPhysics(GameObject obj)
+    {
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
     }
     
     // Score management functions

@@ -162,18 +162,22 @@ public class AgentManager : MonoBehaviour
         // This means the model interprets this as the action taken in death state led to positive reward when respawned
         // This is subideal, but we can handle this on the model side instead of here
         bool anyAgentDied = false;
+        string deadAgentName = "";
         foreach (var agent in agents)
         {
             if (agent.IsDead())
             {
                 agent.SetDeathState(false);
-                StartCoroutine(AgentDeathResetLoop(agent.name));
+                deadAgentName = agent.name;
                 anyAgentDied = true;
             }
         }
 
         if (anyAgentDied)
         {
+            // Wait for the death reset to complete before resuming
+            yield return StartCoroutine(AgentDeathResetLoop(deadAgentName));
+            
             // Resume game with the previous time scale
             Time.timeScale = previousTimeScale;
             yield break; // Terminate coroutine when agent dies
