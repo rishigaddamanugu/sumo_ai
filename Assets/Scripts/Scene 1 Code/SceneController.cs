@@ -219,21 +219,25 @@ public class SceneController : MonoBehaviour
             yield break;
         }
         
-        // Calculate the jump parameters
-        Vector3 jumpDirection = Agent.transform.forward; // Jump in the forward direction
-        float jumpForce = 8f; // Upward force
-        float forwardForce = 6f; // Forward force for the arc
+        // Calculate platform-relative parameters
+        Vector3 agentToPlatform = SumoPlatform.transform.position - Agent.transform.position;
+        float distanceToPlatform = agentToPlatform.magnitude;
         
-                // Apply the jump force (upward + forward)
+        // Calculate jump parameters based on distance to platform
+        Vector3 jumpDirection = agentToPlatform.normalized; // Jump towards platform
+        float jumpForce = Mathf.Max(8f, distanceToPlatform * 0.8f); // Scale upward force with distance
+        float forwardForce = Mathf.Max(6f, distanceToPlatform * 0.6f); // Scale forward force with distance
+        
+        // Apply the jump force (upward + forward)
         Vector3 jumpVector = Vector3.up * jumpForce + jumpDirection * forwardForce;
         agentRigidbody.AddForce(jumpVector, ForceMode.Impulse);
         
-        // Jump and rotate simultaneously
-        float jumpDuration = 3f; // Total jump duration
-        float rotateDuration = 2f; // Rotation duration (slightly shorter than jump)
+        // Calculate jump duration based on distance
+        float jumpDuration = Mathf.Max(3f, distanceToPlatform * 0.3f); // Scale duration with distance
+        float rotateDuration = jumpDuration * 0.67f; // Rotation duration (slightly shorter than jump)
         float elapsedTime = 0f;
         
-        Debug.Log("Jumping and rotating simultaneously");
+        Debug.Log($"Jumping and rotating simultaneously - Distance: {distanceToPlatform:F2}, Duration: {jumpDuration:F2}");
         Quaternion startRotation = Agent.transform.rotation;
         Quaternion endRotation = startRotation * Quaternion.Euler(0f, 90f, 0f);
         
