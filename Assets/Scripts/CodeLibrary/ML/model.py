@@ -8,7 +8,7 @@ import json
 import os
 
 class Model(nn.Module):
-    def __init__(self, state_dim, action_dim, trajectory_length=128):
+    def __init__(self, state_dim, action_dim, trajectory_length=1024):
         super(Model, self).__init__()
 
         self.fc1 = nn.Linear(state_dim, 128)
@@ -72,7 +72,7 @@ class Model(nn.Module):
         actions = ["forward", "backward", "left", "right"]
         return actions[action_idx]
 
-    def train_with_reward_scaling(self):
+    def train_with_reward_scaling(self, epochs=10):
         # Safety check: ensure we have enough data to train
         if len(self.states) < 2 or len(self.actions) < 2 or len(self.rewards) < 2:
             return
@@ -91,7 +91,6 @@ class Model(nn.Module):
         states = torch.tensor(np.array(self.states[:-1]), dtype=torch.float32)  # Remove last state
         actions = torch.tensor(np.array(self.actions[:-1]), dtype=torch.float32)  # Remove last action
 
-
         # Normalize rewards
         reward_mean = rewards.mean()
         reward_std = rewards.std()
@@ -100,17 +99,19 @@ class Model(nn.Module):
         else:
             normalized_rewards = rewards - reward_mean
 
-        # Forward pass to get predicted actions
-        predictions = self.forward(states)
+        # Training loop with epochs
+        for epoch in range(epochs):
+            # Forward pass to get predicted actions
+            predictions = self.forward(states)
 
-        # Compute per-sample MSE loss and scale by reward
-        per_sample_loss = self.criterion(predictions, actions).mean(dim=1)
-        weighted_loss = (per_sample_loss * normalized_rewards).mean()
+            # Compute per-sample MSE loss and scale by reward
+            per_sample_loss = self.criterion(predictions, actions).mean(dim=1)
+            weighted_loss = (per_sample_loss * normalized_rewards).mean()
 
-        # Backward pass
-        self.optimizer.zero_grad()
-        weighted_loss.backward()
-        self.optimizer.step()
+            # Backward pass
+            self.optimizer.zero_grad()
+            weighted_loss.backward()
+            self.optimizer.step()
 
         # Reset buffer
         self.states = []
