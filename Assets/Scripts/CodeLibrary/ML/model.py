@@ -76,6 +76,7 @@ class Model(nn.Module):
 
     def train_with_reward_scaling(self, epochs=10):
         print("TRAINING MODEL!!!!!!")
+        time.sleep(10)
 
         # Safety check: ensure we have enough data to train
         if len(self.states) < 2 or len(self.actions) < 2 or len(self.rewards) < 2:
