@@ -154,6 +154,7 @@ public class AgentManager : MonoBehaviour
         var agentCoroutines = new List<Coroutine>();
         foreach (var agent in agents)
         {
+            Debug.Log("Requesting action for agent: " + agent.name);
             agentCoroutines.Add(StartCoroutine(agent.RequestAction()));
         }
 

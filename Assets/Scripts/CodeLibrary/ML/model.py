@@ -11,6 +11,8 @@ class Model(nn.Module):
     def __init__(self, state_dim, action_dim, trajectory_length=1024):
         super(Model, self).__init__()
 
+        self.action_dim = action_dim
+
         self.fc1 = nn.Linear(state_dim, 128)
         self.fc2 = nn.Linear(128, 128)
         self.fc3 = nn.Linear(128, action_dim)
@@ -49,13 +51,13 @@ class Model(nn.Module):
         # 10% chance to take random action for exploration
         if confidence < 0.5:
             # Use random action when confidence is low
-            action_idx = random.randint(0, 3)
+            action_idx = random.randint(0, self.action_dim - 1)
         else:
             # Use model's predicted action
             action_idx = torch.argmax(action_probs).item()
         
         # Store the state and actual action taken (one-hot encoded)
-        actual_action = np.zeros(4)
+        actual_action = np.zeros(self.action_dim)
         actual_action[action_idx] = 1.0
         self.states.append(state)
         self.actions.append(actual_action)
@@ -69,7 +71,7 @@ class Model(nn.Module):
             self.train_with_reward_scaling()
 
         # Return the action that was actually taken
-        actions = ["forward", "backward", "left", "right"]
+        actions = ["forward", "backward", "left", "right", "jump"]
         return actions[action_idx]
 
     def train_with_reward_scaling(self, epochs=10):
