@@ -226,8 +226,8 @@ public class SceneController : MonoBehaviour
         
         // Calculate jump parameters for precise landing on platform
         Vector3 jumpDirection = agentToPlatform.normalized; // Jump towards platform
-        float jumpForce = Mathf.Max(3f, distanceToPlatform * 0.3f); // Reduced upward force for smaller arc
-        float forwardForce = Mathf.Max(3f, distanceToPlatform * 0.4f); // Reduced forward force to prevent overshooting
+        float jumpForce = Mathf.Max(3f, distanceToPlatform * 0.4f); // Reduced upward force for smaller arc
+        float forwardForce = Mathf.Max(3f, distanceToPlatform * 0.5f); // Reduced forward force to prevent overshooting
         
         // Apply the jump force (upward + forward)
         Vector3 jumpVector = Vector3.up * jumpForce + jumpDirection * forwardForce;
