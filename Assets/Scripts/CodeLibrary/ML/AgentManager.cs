@@ -10,7 +10,7 @@ public class AgentManager : MonoBehaviour
     
     // Speed controller variables
     private float[] speedMultipliers = { 1f, 16f, 32f};
-    private float[] speedDurations = { 0f, 0f, 100f };
+    private float[] speedDurations = { 100f, 0f, 0f };
     private int currentSpeedIndex = 0;
     private float speedTimer = 0f;
     private float previousTimeScale = 1f;

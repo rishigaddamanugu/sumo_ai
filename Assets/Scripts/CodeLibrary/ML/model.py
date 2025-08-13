@@ -7,8 +7,17 @@ import time
 import json
 import os
 
+
+###################################
+# MAJOR FLAW in TWO AGENT SYSTEM
+# usually, because states and rewards are misaligned, we offset by 1
+# Since both agents query the same model, offsetting by 1 doesn't work because the alignment depends on how many agents there are
+# We need some way to know how many agents there are and mod to offset before training
+# Alternatively, we can just use one model per agent, but that means we need to launch a new model for each agent
+###################################
+
 class Model(nn.Module):
-    def __init__(self, state_dim, action_dim, trajectory_length=1024):
+    def __init__(self, state_dim, action_dim, trajectory_length=16):
         super(Model, self).__init__()
 
         self.action_dim = action_dim
@@ -95,6 +104,11 @@ class Model(nn.Module):
         rewards = torch.tensor(np.array(self.rewards[1:]), dtype=torch.float32)
         states = torch.tensor(np.array(self.states[:-1]), dtype=torch.float32)  # Remove last state
         actions = torch.tensor(np.array(self.actions[:-1]), dtype=torch.float32)  # Remove last action
+
+
+        print("Rewards: ", rewards)
+        print("States: ", states)
+        print("Actions: ", actions)
 
         # Normalize rewards
         reward_mean = rewards.mean()
