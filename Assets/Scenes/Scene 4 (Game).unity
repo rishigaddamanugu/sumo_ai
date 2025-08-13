@@ -656,7 +656,7 @@ PrefabInstance:
     - target: {fileID: 6528986021367019575, guid: 0d2fc8910fec34b8da64418734c338df, type: 3}
       propertyPath: bob
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 9067637175211829627}
     - target: {fileID: 6528986021367019575, guid: 0d2fc8910fec34b8da64418734c338df, type: 3}
       propertyPath: ted
       value: 
