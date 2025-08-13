@@ -349,8 +349,6 @@ public class SceneController : MonoBehaviour
     {
         SwitchToPlatformCamera();
 
-        // Parenting so the agent moves with the platform
-        Agent.transform.SetParent(SumoPlatform.transform);
 
         yield return new WaitForSeconds(1f);
 
@@ -376,7 +374,6 @@ public class SceneController : MonoBehaviour
         // Stop exactly at target to avoid overshoot
         position.y = targetY;
         SumoPlatform.transform.position = position;
-        Agent.transform.SetParent(null);
     }
 
     
